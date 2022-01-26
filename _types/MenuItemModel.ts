@@ -3,7 +3,8 @@ export interface MenuItemObject {
     menuDish: Array<Dish>;
     menuPrice: String;
 }
-interface Dish {
+
+export interface Dish {
     dishName: String;
     dishDescription: String;
 }

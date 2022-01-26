@@ -21,3 +21,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.shadow-right{
+  box-shadow: inset -1px 0 50px -30px rgba(63, 63, 63, 0.23);
+}
+
+.shadow-left {
+  background-color: red;
+}

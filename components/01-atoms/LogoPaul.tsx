@@ -1,9 +1,7 @@
-import {Component} from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-class LogoPaul extends Component{
-    render () {
+export function LogoPaul(){
         return (
             <div className="ml-5 ">
                 <Link href="/">
@@ -13,7 +11,6 @@ class LogoPaul extends Component{
                 </Link>
             </div>
         )
-    }
 }
 
 export default LogoPaul

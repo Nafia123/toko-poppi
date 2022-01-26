@@ -1,13 +1,9 @@
-import {Component} from "react";
 
-class Footer extends Component{
-    render () {
-        return (
-            <footer className="shadow-md flex justify-between absolute inset-x-0 bottom-0">
-                sup bitch
+export function Footer(){
+    return (
+            <footer className="drop-shadow flex justify-between inset-x-0 bottom-0 p-10">
+                <p >Footer</p>
             </footer>
-        )
-    }
+    )
 }
 
-export default Footer

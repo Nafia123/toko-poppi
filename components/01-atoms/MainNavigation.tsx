@@ -1,8 +1,6 @@
-import {Component} from "react";
 import Link from 'next/link';
 
-class MainNavigation extends Component{
-    render () {
+export function MainNavigation() {
         return (
            <nav>
                <ul className="flex justify-center items-center">
@@ -25,8 +23,6 @@ class MainNavigation extends Component{
 
            </nav>
      )
-    }
 }
 
 
-export default MainNavigation
