@@ -1,0 +1,17 @@
+.heroSection{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/hero-background.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    min-height: 200px;
+}
+
+
+.heroText {
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size:20px
+}
