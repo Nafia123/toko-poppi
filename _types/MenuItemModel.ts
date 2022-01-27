@@ -1,10 +1,11 @@
 export interface MenuItemObject {
-    menuName: String;
+    menuName: string;
     menuDish: Array<Dish>;
-    menuPrice: String;
+    menuPrice: number;
 }
 
 export interface Dish {
-    dishName: String;
-    dishDescription: String;
+    dishName: string;
+    dishDescription: string;
+    dishOptions?: Array<string>
 }

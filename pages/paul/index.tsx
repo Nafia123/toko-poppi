@@ -6,19 +6,19 @@ import {MenuItemObject} from "../../_types/MenuItemModel";
 import { MenuItem } from "../../components/03-organisms/MenuItem";
 import {ShoppingCart} from "../../components/03-organisms/ShoppingCart";
 import {useEffect, useState} from "react";
+import {ShoppingCartItem} from "../../_types/ShoppingCartItem";
 
 
 
 
-const Paul = () => {
+export default function Paul() {
     const [posFixed, setPosFixed] = useState(false);
-    const [shoppingCart, setShoppingCart] = useState([] as Array<MenuItemObject>);
+    const [shoppingCart, setShoppingCart] = useState<Map<string,ShoppingCartItem>>(new Map());
     useEffect(() => {
         if( typeof window !== "undefined"){
             window.addEventListener("scroll", () => setPosFixed(window.scrollY> 100))
         }
     }, []);
-
     return (
         <div>
             <Head>
@@ -33,7 +33,7 @@ const Paul = () => {
                 </section>
                 <section className="col-span-1">
                     <div className={`h-screen ${posFixed ? "fixed top-0 w-1/6 " : ""}`}>
-                        <ShoppingCart/>
+                        <ShoppingCart shoppingItems={shoppingCart}/>
                     </div>
                 </section>
             </section>
@@ -43,28 +43,34 @@ const Paul = () => {
 }
 
 
-export default Paul
 
 const data:Array<MenuItemObject> = [{
     menuDish: [{
         dishName: "Dal makhni",
         dishDescription: "Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven"
     }],
-    menuName: "Amritsar",
-    menuPrice: "8,00"
+    menuName: "Amritsar1",
+    menuPrice: 8.00
 }, {
     menuDish: [{
         dishName: "Dal makhni",
         dishDescription: "Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven"
+    },{
+            dishName: "Groente",
+            dishDescription: "Courgette"
+        },{
+        dishName: "Side Dish",
+        dishDescription: "Side Dish of their choice",
+        dishOptions: ["Rijst","Chapati","Naan"]
     }],
-    menuName: "Amritsar",
-    menuPrice: "8,00"
+    menuName: "Amritsar2",
+    menuPrice: 8.00
 },
     {
         menuDish: [{
             dishName: "Dal makhni",
             dishDescription: "Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven"
         }],
-        menuName: "Amritsar",
-        menuPrice: "8,00"
+        menuName: "Amritsar3",
+        menuPrice:8.00
     }]
