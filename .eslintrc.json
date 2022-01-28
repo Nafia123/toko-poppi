@@ -1,3 +1,13 @@
 {
-  "extends": "airbnb"
+  "extends": ["airbnb"
+  ,"airbnb-typescript"
+  ],
+  "rules": {
+    // suppress errors for missing 'import React' in files
+    "react/react-in-jsx-scope": "off",
+    "react/react-in-tsx-scope": "off"
+  },
+  "parserOptions": {
+    "project": ["tsconfig.json"]
+  }
 }
