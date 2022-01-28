@@ -7,11 +7,6 @@ import {MenuItem} from "../components/03-organisms/MenuItem";
 import {MenuItemObject} from "../_types/MenuItemModel";
 
 
-export default {
-    title:"MenuItem",
-    component: MenuItem
-} as ComponentMeta<typeof MenuItem>
-
 export const Primary: ComponentStory<typeof MenuItem> = () => {
     return (
         <div>
@@ -22,11 +17,3 @@ export const Primary: ComponentStory<typeof MenuItem> = () => {
     )
 }
 
-const data:MenuItemObject = {
-    menuDish: [{
-        dishName: "Dal makhni",
-        dishDescription: "Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven"
-    }],
-    menuName: "Amritsar",
-    menuPrice: "8,00"
-}
