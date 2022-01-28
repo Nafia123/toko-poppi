@@ -6,14 +6,17 @@ import {MenuItemObject} from "../../_types/MenuItemModel";
 import { MenuItem } from "../../components/03-organisms/MenuItem";
 import {ShoppingCart} from "../../components/03-organisms/ShoppingCart";
 import {useEffect, useState} from "react";
-import {ShoppingCartItem} from "../../_types/ShoppingCartItem";
+import {ShoppingCartList} from "../../_types/ShoppingCartItem";
 
 
 
 
-export default function Paul() {
+export default function Pall() {
     const [posFixed, setPosFixed] = useState(false);
-    const [shoppingCart, setShoppingCart] = useState<Map<string,ShoppingCartItem>>(new Map());
+    const [checkout, setCheckout] = useState(false);
+    const [shoppingCart, setShoppingCart] = useState<ShoppingCartList>({
+        items: [], totalPrice: 0
+    });
     useEffect(() => {
         if( typeof window !== "undefined"){
             window.addEventListener("scroll", () => setPosFixed(window.scrollY> 100))
@@ -26,17 +29,19 @@ export default function Paul() {
                 <link rel="icon" href="/toko-poppi-logo.png" />
             </Head>
             <Header/>
-            <section className="grid grid-cols-6">
-                <section className="col-span-5 shadow-right">
-                    <Hero/>
-                    {data.map((menu) => <MenuItem key={menu.menuName as string} data={menu} setShoppingCart={setShoppingCart}/>)}
-                </section>
-                <section className="col-span-1">
-                    <div className={`h-screen ${posFixed ? "fixed top-0 w-1/6 " : ""}`}>
-                        <ShoppingCart shoppingItems={shoppingCart}/>
-                    </div>
-                </section>
-            </section>
+            { !checkout ?
+                <section className="grid grid-cols-6">
+                    <section className="col-span-5 shadow-right">
+                        <Hero/>
+                        {data.map((menu) => <MenuItem key={menu.menuName} data={menu} setShoppingCart={setShoppingCart}/>)}
+                    </section>
+                    <section className="col-span-1">
+                        <div className={`h-screen ${posFixed ? "fixed top-0 w-1/6 " : ""}`}>
+                            <ShoppingCart shoppingItems={shoppingCart} setCheckout={setCheckout} setShoppingCart={setShoppingCart}/>
+                        </div>
+                    </section>
+                </section> : <div>Test</div>}
+
             <Footer/>
         </div>
     )
@@ -44,7 +49,7 @@ export default function Paul() {
 
 
 
-const data:Array<MenuItemObject> = [{
+const data : Array<MenuItemObject> = [{
     menuDish: [{
         dishName: "Dal makhni",
         dishDescription: "Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven"
@@ -64,7 +69,7 @@ const data:Array<MenuItemObject> = [{
         dishOptions: ["Rijst","Chapati","Naan"]
     }],
     menuName: "Amritsar2",
-    menuPrice: 8.00
+    menuPrice: 8.50
 },
     {
         menuDish: [{
