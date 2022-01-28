@@ -10,9 +10,9 @@ import {MenuItemObject} from "../_types/MenuItemModel";
 export const Primary: ComponentStory<typeof MenuItem> = () => {
     return (
         <div>
-            {<!--             <MenuItem data={data}/>
-            <MenuItem data={data}/>
-            <MenuItem data={data}/> -->}
+            {/*<MenuItem data={data}/>*/}
+            {/*<MenuItem data={data}/>*/}
+            {/*<MenuItem data={data}/>*/}
         </div>
     )
 }
