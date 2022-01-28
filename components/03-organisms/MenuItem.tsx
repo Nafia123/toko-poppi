@@ -82,8 +82,8 @@ export default function MenuItem({ data, setShoppingCart } : PropData) {
   const [showOptions, setShowOptions] = React.useState(false);
   const openClick = () => setShowOptions(!showOptions);
   return (
-    <section role="button" aria-hidden onClick={openClick} className="mx-10 my-5 rounded-md shadow-lg border-2">
-      <div className="flex justify-between p-8">
+    <section className="mx-10 my-5 rounded-md shadow-lg border-2">
+      <div role="button" aria-hidden onClick={openClick} className="flex justify-between p-8">
         <div className="ml-2">
           <div className="flex">
             <p className="text-4xl font-bold">{menuName}</p>
