@@ -3,7 +3,6 @@ import Image from 'next/image';
 import React, {FormEvent, useState} from "react";
 import styles from '/styles/Menuitem.module.css'
 import {ShoppingCartItem, ShoppingCartList} from "../../_types/ShoppingCartItem";
-import _ from "lodash";
 import { showCorrectPrice } from "../../utils/helper";
 
 interface propData {
