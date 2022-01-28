@@ -5,7 +5,8 @@
   "rules": {
     // suppress errors for missing 'import React' in files
     "react/react-in-jsx-scope": "off",
-    "react/react-in-tsx-scope": "off"
+    "react/react-in-tsx-scope": "off",
+    "react/require-default-props": "off"
   },
   "parserOptions": {
     "project": ["tsconfig.json"]

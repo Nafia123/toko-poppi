@@ -1,10 +1,14 @@
 import Image from 'next/image';
+import Modal from 'react-modal';
+import React from 'react';
 import { showCorrectPrice } from '../../utils/helper';
 import { ShoppingCartItem, ShoppingCartList } from '../../_types/ShoppingCartItem';
 
 interface PropType {
   shoppingItems: ShoppingCartList,
+  // eslint-disable-next-line react/no-unused-prop-types
   setShoppingCart: React.Dispatch<React.SetStateAction<ShoppingCartList>>,
+  // eslint-disable-next-line react/no-unused-prop-types
   setCheckout: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -126,12 +130,22 @@ function PaymentSection({ cartItemList, setCheckout }: {
   );
 }
 
-export default function ShoppingCart({ shoppingItems, setShoppingCart, setCheckout }: PropType) {
+interface WebShopProp extends PropType{
+  closeModal: () => void
+}
+
+export function WebShoppingCart({
+  shoppingItems, setShoppingCart, setCheckout,
+  closeModal,
+}: WebShopProp) {
   return (
     <section>
       <div className="divide-y divide-solid">
-        <div className="">
+        <div className="flex justify-between md:block">
           <p className="text-2xl my-5 font-bold text-center">Winkelmandje</p>
+          <button type="button" onClick={() => closeModal()} className="visible md:hidden">
+            <p className="text-2xl visible md:hidden my-5 font-bold text-right">X</p>
+          </button>
         </div>
         <div className="row-span-5 divide-y-2 divide-solid">
           <div>
@@ -144,24 +158,86 @@ export default function ShoppingCart({ shoppingItems, setShoppingCart, setChecko
                 </div>
               )
               : (
-                <div className="text-lg
-                                    text-gray-500 divide-y-2 divide-solid"
-                >
+                <div className="text-lg text-gray-500 divide-y-2 divide-solid">
                   {
-                                shoppingItems.items.map((cartItem) => (
-                                  <CartItem
-                                    key={cartItem.id}
-                                    shoppingCart={cartItem}
-                                    setShoppingCart={setShoppingCart}
-                                  />
-                                ))
-                            }
+                          shoppingItems.items.map((cartItem) => (
+                            <CartItem
+                              key={cartItem.id}
+                              shoppingCart={cartItem}
+                              setShoppingCart={setShoppingCart}
+                            />
+                          ))
+                        }
                   <PaymentSection cartItemList={shoppingItems} setCheckout={setCheckout} />
                 </div>
               )}
           </div>
         </div>
       </div>
+    </section>
+  );
+}
+
+function MobileShoppingCart({ shoppingItems, openModal }: {
+  shoppingItems: ShoppingCartList,
+  openModal: () => void,
+}) {
+  return (
+    <div>
+      {
+        shoppingItems.items.length !== 0
+          ? (
+            <button
+              type="button"
+              onClick={() => openModal()}
+              className="w-full text-center border-blue-600 border-2 text-white bg-blue-600 py-2 mt-4 fixed bottom-0"
+            >
+              <p>
+                Winkelmand (
+                {showCorrectPrice(shoppingItems.totalPrice + 0.5)}
+                )
+              </p>
+            </button>
+          ) : ''
+      }
+    </div>
+  );
+}
+
+export default function ShoppingCart({ shoppingItems, setShoppingCart, setCheckout }: PropType) {
+  Modal.setAppElement('#__next');
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
+  return (
+    <section>
+      <div className="hidden md:block">
+        <WebShoppingCart
+          shoppingItems={shoppingItems}
+          setShoppingCart={setShoppingCart}
+          setCheckout={setCheckout}
+          closeModal={() => closeModal()}
+        />
+      </div>
+      <div className="visible md:hidden">
+        <MobileShoppingCart
+          shoppingItems={shoppingItems}
+          openModal={() => openModal()}
+        />
+      </div>
+      <Modal isOpen={modalIsOpen} onRequestClose={() => closeModal()} contentLabel="Winkelmand">
+        <WebShoppingCart
+          shoppingItems={shoppingItems}
+          setShoppingCart={setShoppingCart}
+          setCheckout={setCheckout}
+          closeModal={() => closeModal()}
+        />
+      </Modal>
     </section>
   );
 }

@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function LogoPaul() {
+export default function Logo() {
   return (
     <div className="ml-5 ">
       <Link href="/">
         <a href="/">
-          <Image src="/logo-combo.png" alt="Toko Poppi" width={269.625} height={96.375} />
+          <Image src="/toko-poppi-logo.png" alt="Toko Poppi" width={79.5} height={96.375} />
         </a>
       </Link>
     </div>

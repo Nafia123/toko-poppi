@@ -56,11 +56,11 @@ export default function Pall() {
         <title>Bestel uw maaltijd</title>
         <link rel="icon" href="/toko-poppi-logo.png" />
       </Head>
-      <Header />
+      <Header pallLogo />
       { !checkout
         ? (
           <section className="grid grid-cols-6">
-            <section className="col-span-5 shadow-right">
+            <section className="col-span-6 md:col-span-5 shadow-right">
               <Hero />
               {data.map((menu) => (
                 <MenuItem
@@ -71,7 +71,7 @@ export default function Pall() {
               ))}
             </section>
             <section className="col-span-1">
-              <div className={`h-screen ${posFixed ? 'fixed top-0 w-1/6 ' : ''}`}>
+              <div className={`invisible md:visible sm:h-screen  ${posFixed ? 'fixed top-0 w-1/6 ' : ''}`}>
                 <ShoppingCart
                   shoppingItems={shoppingCart}
                   setCheckout={setCheckout}
