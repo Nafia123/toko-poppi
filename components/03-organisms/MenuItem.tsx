@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import React, { FormEvent, useState } from 'react';
 import { MenuItemObject, Dish } from '../../_types/MenuItemModel';
-import styles from '@/styles/Menuitem.module.css';
+// eslint-disable-next-line import/no-absolute-path
+import styles from '/styles/Menuitem.module.css';
 import { ShoppingCartList } from '../../_types/ShoppingCartItem';
 import { showCorrectPrice } from '../../utils/helper';
 
