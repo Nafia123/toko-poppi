@@ -14,7 +14,7 @@ export default function Home() {
       <Header />
       <section>
         <div className="grid grid-cols-4">
-          <div className="col-span-4 sm:col-span-2 flex px-10 sm:px-5 h-64 sm:h-screen">
+          <div className="col-span-4 md:col-start-2 md:col-span-1 flex px-10 md:px-5 h-64 md:h-screen">
             <p className="text-5xl text-center font-bold text-gray-600 my-auto">
               Authentiek
               <span className="text-blue-500"> Indiaas </span>
@@ -25,7 +25,7 @@ export default function Home() {
               etenswaren
             </p>
           </div>
-          <div className="col-span-4 sm:col-span-2 px-5 flex sm:h-screen sm:py-20 sm:px-10">
+          <div className="col-span-4 md:col-span-2 px-5 flex md:h-screen md:py-20 md:px-10">
             <Image
               src="/store-hero-image.jpeg"
               className="my-auto rounded-bl-[100px] rounded-tr-[100px] rounded-tl-3xl rounded-br-3xl"
