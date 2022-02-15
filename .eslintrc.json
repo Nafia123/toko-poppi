@@ -5,6 +5,7 @@
   "rules": {
     // suppress errors for missing 'import React' in files
     "react/react-in-jsx-scope": "off",
+    "linebreak-style": 0,
     "react/react-in-tsx-scope": "off",
     "react/require-default-props": "off"
   },
@@ -12,3 +13,4 @@
     "project": ["tsconfig.json"]
   }
 }
+/*eslint linebreak-style: ["error", "windows"]*/
