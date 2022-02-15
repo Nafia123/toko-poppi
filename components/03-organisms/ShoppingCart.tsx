@@ -141,10 +141,10 @@ export function WebShoppingCart({
   return (
     <section>
       <div className="divide-y divide-solid">
-        <div className="flex justify-between md:block">
+        <div className="flex justify-between lg:block">
           <p className="text-2xl my-5 font-bold text-center">Winkelmandje</p>
           <button type="button" onClick={() => closeModal()} className="visible md:hidden">
-            <p className="text-2xl visible md:hidden my-5 font-bold text-right">X</p>
+            <p className="text-2xl visible lg:hidden my-5 font-bold text-right">X</p>
           </button>
         </div>
         <div className="row-span-5 divide-y-2 divide-solid">
@@ -216,7 +216,7 @@ export default function ShoppingCart({ shoppingItems, setShoppingCart, setChecko
   }
   return (
     <section>
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <WebShoppingCart
           shoppingItems={shoppingItems}
           setShoppingCart={setShoppingCart}
@@ -224,7 +224,7 @@ export default function ShoppingCart({ shoppingItems, setShoppingCart, setChecko
           closeModal={() => closeModal()}
         />
       </div>
-      <div className="visible md:hidden">
+      <div className="visible lg:hidden">
         <MobileShoppingCart
           shoppingItems={shoppingItems}
           openModal={() => openModal()}

@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
+import { gql } from '@apollo/client';
 import Header from '../../components/03-organisms/Header';
 import Footer from '../../components/03-organisms/Footer';
 import Hero from '../../components/03-organisms/Hero';
@@ -7,39 +8,51 @@ import { MenuItemObject } from '../../_types/MenuItemModel';
 import MenuItem from '../../components/03-organisms/MenuItem';
 import ShoppingCart from '../../components/03-organisms/ShoppingCart';
 import { ShoppingCartList } from '../../_types/ShoppingCartItem';
+import client from '../../apollo-client';
 
-const data : Array<MenuItemObject> = [{
-  menuDish: [{
-    dishName: 'Dal makhni',
-    dishDescription: 'Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven',
-  }],
-  menuName: 'Amritsar1',
-  menuPrice: 8.00,
-}, {
-  menuDish: [{
-    dishName: 'Dal makhni',
-    dishDescription: 'Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven',
-  }, {
-    dishName: 'Groente',
-    dishDescription: 'Courgette',
-  }, {
-    dishName: 'Side Dish',
-    dishDescription: 'Side Dish of their choice',
-    dishOptions: ['Rijst', 'Chapati', 'Naan'],
-  }],
-  menuName: 'Amritsar2',
-  menuPrice: 8.50,
-},
-{
-  menuDish: [{
-    dishName: 'Dal makhni',
-    dishDescription: 'Gesplitste bruine kikkererwten, zwarte bonen en kidney bonen gekook in een pot in de oven',
-  }],
-  menuName: 'Amritsar3',
-  menuPrice: 8.00,
-}];
+interface MenuItemData {
+  attributes: MenuItemObject
+}
+interface GqlData{
+  menuItems: {
+    data: MenuItemData[]
+  }
+}
+export async function getServerSideProps() {
+  const query = gql`
+     query  { menuItems(filters:{visible: {eq:true}}){
+  data {
+    attributes{
+      menuName
+      menuDish {
+        dishName
+        dishDescription
+        dishOptions {
+         dishOption
+        }
+      }
+      menuPrice
+      menuImage{
+        data {
+          attributes{
+            url
+          }
+        }
+      }
+    }
+  }
 
-export default function Pall() {
+} } `;
+  const { data } = await client.query<GqlData>({ query });
+  return {
+    props: {
+      menuItems: data.menuItems,
+    },
+  };
+}
+
+export default function Pall({ menuItems }: GqlData) {
+  const { data } = menuItems;
   const [posFixed, setPosFixed] = useState(false);
   const [checkout, setCheckout] = useState(false);
   const [shoppingCart, setShoppingCart] = useState<ShoppingCartList>({
@@ -59,19 +72,19 @@ export default function Pall() {
       <Header pallLogo />
       { !checkout
         ? (
-          <section className="grid grid-cols-6">
-            <section className="col-span-6 md:col-span-5 shadow-right">
+          <section className="grid grid-cols-5 xl:grid-cols-6">
+            <section className="col-span-5 lg:col-span-4 xl:col-span-5 shadow-right">
               <Hero />
-              {data.map((menu) => (
+              {data.map(({ attributes }) => (
                 <MenuItem
-                  key={menu.menuName}
-                  data={menu}
+                  key={attributes.menuName}
+                  data={attributes}
                   setShoppingCart={setShoppingCart}
                 />
               ))}
             </section>
-            <section className="col-span-1">
-              <div className={`invisible md:visible sm:h-screen  ${posFixed ? 'fixed top-0 w-1/6 ' : ''}`}>
+            <section className="w-full">
+              <div className={`invisible lg:visible h-screen lg:h-1/2 ${posFixed ? 'fixed top-0 w-1/5 xl:w-1/6' : ''}`}>
                 <ShoppingCart
                   shoppingItems={shoppingCart}
                   setCheckout={setCheckout}

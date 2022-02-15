@@ -19,6 +19,9 @@ export default function Home() {
               Authentiek
               <span className="text-blue-500"> Indiaas </span>
               {' '}
+              ,
+              <span className="text-blue-500"> Surinaamse </span>
+              {' '}
               &
               <span className="text-blue-500"> Thaise </span>
               {' '}

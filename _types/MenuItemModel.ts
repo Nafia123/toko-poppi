@@ -7,5 +7,5 @@ export interface MenuItemObject {
 export interface Dish {
   dishName: string;
   dishDescription: string;
-  dishOptions?: Array<string>
+  dishOptions?: Array<{ dishOption: string }>
 }
