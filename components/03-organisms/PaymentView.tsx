@@ -153,7 +153,7 @@ export default function ViewPayment({
             name: accountHolderName,
           },
         },
-        return_url: `http://localhost:3000/${router.locale}/completed?orderId=${orderId}&recordId=${orderDataRes.data.id}`,
+        return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/${router.locale}/completed?orderId=${orderId}&recordId=${orderDataRes.data.id}`,
       });
       setLoading(true);
       if (error) {
