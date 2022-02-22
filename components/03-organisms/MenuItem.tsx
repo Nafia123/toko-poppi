@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import React, { FormEvent, useState } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import { MenuItemObject, Dish } from '../../_types/MenuItemModel';
 // eslint-disable-next-line import/no-absolute-path
 import styles from '/styles/Menuitem.module.css';
@@ -8,7 +8,8 @@ import { showCorrectPrice } from '../../utils/helper';
 
 interface PropData {
   data: MenuItemObject,
-  setShoppingCart: React.Dispatch<React.SetStateAction<ShoppingCartList>>
+  setShoppingCart: React.Dispatch<React.SetStateAction<ShoppingCartList>>,
+  orderClosed?: boolean
 }
 
 function addToShoppingCart(
@@ -44,7 +45,7 @@ function addToShoppingCart(
   });
 }
 
-function OpenOptions({ setShoppingCart, data }: PropData) {
+function OpenOptions({ setShoppingCart, data, orderClosed }: PropData) {
   const { menuDish } = data;
   const defaultOptions = new Map<string, string>();
   menuDish.forEach((dish) => {
@@ -52,6 +53,7 @@ function OpenOptions({ setShoppingCart, data }: PropData) {
       defaultOptions.set(dish.dishName, dish.dishOptions[0].dishOption);
     }
   });
+  const { t } = useTranslation('common');
   const [options, setOptions] = useState<Map<string, string>>(defaultOptions);
   function changeOptions(event: FormEvent<HTMLSelectElement>, dishName: string) {
     const selectValue = (event.target as HTMLInputElement).value;
@@ -62,7 +64,7 @@ function OpenOptions({ setShoppingCart, data }: PropData) {
       <div>
         {menuDish.map((dish) => (dish.dishOptions?.length
           ? (
-            <div>
+            <div key={dish.dishName}>
               <p className="py-3 text-xl font-bold">
                 {dish.dishName}
                 :
@@ -72,14 +74,21 @@ function OpenOptions({ setShoppingCart, data }: PropData) {
                 key={dish.dishName}
                 onChange={(event) => changeOptions(event, dish.dishName)}
               >
-                {dish.dishOptions.map((option) => <option key={option.dishOption}>{option.dishOption}</option>)}
+                {dish.dishOptions.map(
+                  (option) => <option key={option.dishOption}>{option.dishOption}</option>,
+                )}
               </select>
             </div>
           ) : null))}
       </div>
-      <button className="mt-5 text-white border-blue-600 border-2 bg-blue-600 p-2" type="submit" onClick={() => addToShoppingCart(setShoppingCart, data, options)}>
-        + Voeg to aan Winkelwagen
-      </button>
+      {!orderClosed ? (
+        <button className="mt-5 text-white border-blue-600 border-2 bg-blue-600 p-2" type="submit" onClick={() => addToShoppingCart(setShoppingCart, data, options)}>
+          +
+          {' '}
+          {t('menuItem.addToShoppingCart')}
+        </button>
+      ) : null}
+
     </div>
   );
 }
@@ -93,8 +102,11 @@ function ShowDish({ dish } : { dish: Dish }) {
   );
 }
 
-export default function MenuItem({ data, setShoppingCart } : PropData) {
-  const { menuName, menuPrice, menuDish } = data;
+export default function MenuItem({ data, setShoppingCart, orderClosed } : PropData) {
+  const {
+    menuName, menuPrice, menuDish, menuImage, allergens,
+  } = data;
+  const { t } = useTranslation('common');
   const [showOptions, setShowOptions] = React.useState(false);
   const openClick = () => setShowOptions(!showOptions);
   return (
@@ -108,16 +120,35 @@ export default function MenuItem({ data, setShoppingCart } : PropData) {
             <div className="flex mb-2">
               <p className="text-4xl font-bold">{menuName}</p>
             </div>
-            <p className="text-2xl text-gray-800 font-bold my-1">Gerechten:</p>
+            <p className="text-2xl text-gray-800 font-bold my-1">
+              {t('menuItem.dish')}
+              :
+            </p>
             {menuDish.map((dish) => (!dish.dishOptions?.length ? <ShowDish key={dish.dishName} dish={dish} /> : ''))}
-            <div className="md: mb-10" />
+            <div>
+              {allergens.length.valueOf() !== 0
+                ? (
+                  <p className="underline text-gray-400 text-sm">
+                    {t('menuItem.allergens')}
+                    {': '}
+                    <span className="font-bold italic">{allergens.map((allergen) => (t(`menuItem.allergensList.${allergen.allergens}`))).join(', ')}</span>
+                  </p>
+                )
+                : null}
+            </div>
+            <div className="md:mb-10" />
             <p className="text-xl md:text-4xl font-medium mt-2 md:mt-10 md:absolute bottom-5">{showCorrectPrice(menuPrice)}</p>
           </div>
-          <img src="/daal.png" alt="Dish" className="mx-1 mt-10 w-20 h-20 md:mr-1 md:mt-0 sm:mt-0 md:w-52 md:h-52 sm:w-40 sm:h-40 right-5 relative my-0 " />
+          <img src={menuImage.data !== null ? menuImage.data.attributes.url : '/daal.png'} alt="Dish" className="mx-1 mt-10 w-20 h-20 md:mr-1 md:mt-0 sm:mt-0 md:w-52 md:h-52 sm:w-40 sm:h-40 right-5 relative my-0 " />
         </div>
       </section>
-      {showOptions ? <OpenOptions setShoppingCart={setShoppingCart} data={data} /> : null}
+      {showOptions ? (
+        <OpenOptions
+          setShoppingCart={setShoppingCart}
+          orderClosed={orderClosed}
+          data={data}
+        />
+      ) : null}
     </div>
-
   );
 }

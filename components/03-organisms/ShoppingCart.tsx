@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Modal from 'react-modal';
-import React from 'react';
+import React, { useEffect } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 import { showCorrectPrice } from '../../utils/helper';
 import { ShoppingCartItem, ShoppingCartList } from '../../_types/ShoppingCartItem';
 
@@ -10,6 +11,14 @@ interface PropType {
   setShoppingCart: React.Dispatch<React.SetStateAction<ShoppingCartList>>,
   // eslint-disable-next-line react/no-unused-prop-types
   setCheckout: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface ModalCartProp extends PropType{
+  closeModal: () => void
+}
+
+interface WebShopCartProp extends PropType{
+  showPayButton?: boolean
 }
 
 function incrementAmount(
@@ -48,10 +57,10 @@ function decrementAmount(
     return newCart;
   });
 }
-
-function CartItem({ shoppingCart, setShoppingCart }: {
+function CartItem({ shoppingCart, setShoppingCart, showPayButton }: {
   shoppingCart: ShoppingCartItem,
   setShoppingCart: React.Dispatch<React.SetStateAction<ShoppingCartList>>
+  showPayButton: boolean
 }) {
   const {
     option, amount, name, price,
@@ -74,11 +83,14 @@ function CartItem({ shoppingCart, setShoppingCart }: {
         <p>{option.join(', ')}</p>
       </div>
       <div className="flex justify-end mt-2">
-        <button type="button" onClick={() => incrementAmount(shoppingCart.id, setShoppingCart)} className="border border-blue-600 mr-2">
+        {!showPayButton && amount === 1 ? null
+          : (
+            <button type="button" onClick={() => decrementAmount(shoppingCart.id, setShoppingCart)} className="border border-blue-600 mr-2">
+              <img src="/remove_black_24dp.svg" alt="-" />
+            </button>
+          )}
+        <button type="button" onClick={() => incrementAmount(shoppingCart.id, setShoppingCart)} className="border border-blue-600 ">
           <img src="/add_black_24dp.svg" alt="+" />
-        </button>
-        <button type="button" onClick={() => decrementAmount(shoppingCart.id, setShoppingCart)} className="border border-blue-600">
-          <img src="/remove_black_24dp.svg" alt="-" />
         </button>
       </div>
     </div>
@@ -89,99 +101,148 @@ function startPaymentProcess(setCheckout: React.Dispatch<React.SetStateAction<bo
   setCheckout(true);
 }
 
-function PaymentSection({ cartItemList, setCheckout }: {
+export function PaymentSection({ cartItemList, setCheckout, showPayButton }: {
   cartItemList: ShoppingCartList,
+  showPayButton: boolean
   setCheckout: React.Dispatch<React.SetStateAction<boolean>>
 }) {
+  const { t } = useTranslation('common');
+
   return (
     <div className="px-4">
-      <div className="flex justify-between mt-3">
+      {/* <div className="flex justify-between mt-3"> */}
+      {/*  <div> */}
+      {/*    {t('shoppingCart.subtotal')} */}
+      {/*    : */}
+      {/*  </div> */}
+      {/*  <div> */}
+      {/*    <p>{showCorrectPrice(cartItemList.totalPrice)}</p> */}
+      {/*  </div> */}
+      {/* </div> */}
+      {/* <div className="flex justify-between mt-1"> */}
+      {/*  <div> */}
+      {/*    {t('shoppingCart.postageCosts')} */}
+      {/*  </div> */}
+      {/*  <div> */}
+      {/*    <p>{showCorrectPrice(0.5)}</p> */}
+      {/*  </div> */}
+      {/* </div> */}
+      <div className="flex justify-between mt-1 font-bold">
         <div>
-          Subtotaal:
+          {t('shoppingCart.netTotal')}
         </div>
         <div>
           <p>{showCorrectPrice(cartItemList.totalPrice)}</p>
         </div>
       </div>
-      <div className="flex justify-between mt-1">
-        <div>
-          Verzendkosten:
-        </div>
-        <div>
-          <p>{showCorrectPrice(0.5)}</p>
-        </div>
-      </div>
-      <div className="flex justify-between mt-1 font-bold">
-        <div>
-          Totaal:
-        </div>
-        <div>
-          <p>{showCorrectPrice(cartItemList.totalPrice + 0.5)}</p>
-        </div>
-      </div>
-      <button type="button" onClick={() => startPaymentProcess(setCheckout)} className="w-full text-center border-blue-600 border-2 text-white bg-blue-600 py-2 mt-4">
-        <p>
-          Betaal (
-          {showCorrectPrice(cartItemList.totalPrice + 0.5)}
-          )
-        </p>
-      </button>
+      {showPayButton ? (
+        <button type="button" onClick={() => startPaymentProcess(setCheckout)} className="w-full text-center border-blue-600 border-2 text-white bg-blue-600 py-2 mt-4">
+          <p>
+            {t('shoppingCart.payButton')}
+            {' '}
+            (
+            {showCorrectPrice(cartItemList.totalPrice + 0.5)}
+            )
+          </p>
+        </button>
+      ) : null}
     </div>
   );
 }
 
-interface WebShopProp extends PropType{
-  closeModal: () => void
+export function FullShoppingCart({
+  shoppingItems, setCheckout, setShoppingCart, showPayButton = true,
+} : WebShopCartProp) {
+  const { t } = useTranslation('common');
+  return (
+    <div className="row-span-5 divide-y-2 divide-solid">
+      <div>
+        {shoppingItems.items.length === 0
+          ? (
+            <div className="text-lg my-5 text-gray-500 text-center ">
+              <Image src="/shopping.svg" width={50} height={50} />
+              <p className="text-center">{t('shoppingCart.emptyCart')}</p>
+              <p className="text-center">{t('shoppingCart.addMeal')}</p>
+            </div>
+          )
+          : (
+            <div className="text-lg text-gray-500 divide-y-2 divide-solid">
+              {
+                      shoppingItems.items.map((cartItem) => (
+                        <CartItem
+                          key={cartItem.id}
+                          shoppingCart={cartItem}
+                          setShoppingCart={setShoppingCart}
+                          showPayButton={showPayButton}
+                        />
+                      ))
+                    }
+              <PaymentSection
+                cartItemList={shoppingItems}
+                setCheckout={setCheckout}
+                showPayButton={showPayButton}
+              />
+            </div>
+          )}
+      </div>
+    </div>
+  );
 }
+export function WebShoppingCart(
+  {
+    showPayButton = true, setShoppingCart, shoppingItems, setCheckout,
+  } : WebShopCartProp,
+) {
+  const { t } = useTranslation('common');
 
-export function WebShoppingCart({
-  shoppingItems, setShoppingCart, setCheckout,
-  closeModal,
-}: WebShopProp) {
   return (
     <section>
       <div className="divide-y divide-solid">
         <div className="flex justify-between lg:block">
-          <p className="text-2xl my-5 font-bold text-center">Winkelmandje</p>
+          <p className="text-2xl my-5 font-bold text-center">{t('shoppingCart.title')}</p>
+        </div>
+      </div>
+      <FullShoppingCart
+        setShoppingCart={setShoppingCart}
+        setCheckout={setCheckout}
+        shoppingItems={shoppingItems}
+        showPayButton={showPayButton}
+      />
+    </section>
+  );
+}
+
+export function WebShoppingCartModal({
+  shoppingItems, setShoppingCart, setCheckout,
+  closeModal,
+}: ModalCartProp) {
+  const { t } = useTranslation('common');
+
+  return (
+    <section>
+      <div className="divide-y divide-solid">
+        <div className="flex justify-between lg:block">
+          <p className="text-2xl my-5 font-bold text-center">{t('shoppingCart.title')}</p>
           <button type="button" onClick={() => closeModal()} className="visible md:hidden">
             <p className="text-2xl visible lg:hidden my-5 font-bold text-right">X</p>
           </button>
         </div>
-        <div className="row-span-5 divide-y-2 divide-solid">
-          <div>
-            {shoppingItems.items.length === 0
-              ? (
-                <div className="text-lg my-5 text-gray-500 text-center ">
-                  <Image src="/shopping.svg" width={50} height={50} />
-                  <p className="text-center">Niks in je winkelmandje</p>
-                  <p className="text-center">Voeg een maaltijd toe</p>
-                </div>
-              )
-              : (
-                <div className="text-lg text-gray-500 divide-y-2 divide-solid">
-                  {
-                          shoppingItems.items.map((cartItem) => (
-                            <CartItem
-                              key={cartItem.id}
-                              shoppingCart={cartItem}
-                              setShoppingCart={setShoppingCart}
-                            />
-                          ))
-                        }
-                  <PaymentSection cartItemList={shoppingItems} setCheckout={setCheckout} />
-                </div>
-              )}
-          </div>
-        </div>
+        <FullShoppingCart
+          setShoppingCart={setShoppingCart}
+          setCheckout={setCheckout}
+          shoppingItems={shoppingItems}
+        />
       </div>
     </section>
   );
 }
 
-function MobileShoppingCart({ shoppingItems, openModal }: {
+export function MobileShoppingCart({ shoppingItems, openModal }: {
   shoppingItems: ShoppingCartList,
   openModal: () => void,
 }) {
+  const { t } = useTranslation('common');
+
   return (
     <div>
       {
@@ -190,10 +251,12 @@ function MobileShoppingCart({ shoppingItems, openModal }: {
             <button
               type="button"
               onClick={() => openModal()}
-              className="w-full text-center border-blue-600 border-2 text-white bg-blue-600 py-2 mt-4 fixed bottom-0"
+              className="w-full text-center border-blue-600 border-2 text-white bg-blue-600 py-2 fixed mt-4 z-10 bottom-0"
             >
               <p>
-                Winkelmand (
+                {t('shoppingCart.title')}
+                {' '}
+                (
                 {showCorrectPrice(shoppingItems.totalPrice + 0.5)}
                 )
               </p>
@@ -207,6 +270,12 @@ function MobileShoppingCart({ shoppingItems, openModal }: {
 export default function ShoppingCart({ shoppingItems, setShoppingCart, setCheckout }: PropType) {
   Modal.setAppElement('#__next');
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  useEffect(() => {
+    document.body.style.overflow = modalIsOpen ? 'hidden' : 'unset';
+    return function cleanup() {
+      document.body.style.overflow = 'unset';
+    };
+  }, [modalIsOpen]);
 
   function openModal() {
     setIsOpen(true);
@@ -218,10 +287,9 @@ export default function ShoppingCart({ shoppingItems, setShoppingCart, setChecko
     <section>
       <div className="hidden lg:block">
         <WebShoppingCart
-          shoppingItems={shoppingItems}
           setShoppingCart={setShoppingCart}
           setCheckout={setCheckout}
-          closeModal={() => closeModal()}
+          shoppingItems={shoppingItems}
         />
       </div>
       <div className="visible lg:hidden">
@@ -231,7 +299,7 @@ export default function ShoppingCart({ shoppingItems, setShoppingCart, setChecko
         />
       </div>
       <Modal isOpen={modalIsOpen} onRequestClose={() => closeModal()} contentLabel="Winkelmand">
-        <WebShoppingCart
+        <WebShoppingCartModal
           shoppingItems={shoppingItems}
           setShoppingCart={setShoppingCart}
           setCheckout={setCheckout}

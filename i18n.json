@@ -1,0 +1,9 @@
+{
+    "locales": ["nl-NL", "en-US"],
+    "defaultLocale": "en-US",
+    "pages": {
+        "*": ["common"],
+        "/completed": ["order"],
+        "/": ["frontpage"]
+}
+}

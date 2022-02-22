@@ -29,3 +29,13 @@ a {
 .shadow-left {
   background-color: red;
 }
+
+
+@layer components {
+  .error-message{
+    @apply text-red-500 text-sm ml-0.5
+  }
+  input {
+    @apply bg-white ml-0.5 p-2 border-2 w-full text-gray-800 disabled:bg-gray-100
+  }
+}

@@ -7,7 +7,10 @@
     "react/react-in-jsx-scope": "off",
     "linebreak-style": 0,
     "react/react-in-tsx-scope": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading" : "off",
+    "allowForLoopAfterthoughts": 0,
+    "no-plusplus": [2, { "allowForLoopAfterthoughts": true }]
   },
   "parserOptions": {
     "project": ["tsconfig.json"]

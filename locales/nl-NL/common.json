@@ -1,0 +1,107 @@
+ {
+      "generalWeb": {
+        "tabInfo": "Bestel uw maaltijd"
+      },
+      "shoppingCart": {
+        "title": "Winkelmandje",
+        "emptyCart": "Niks in je winkelmandje. Voeg een maaltijd toe",
+        "addMeal": "Voeg een maaltijd toe",
+        "subtotal": "Subtotaal",
+        "postageCosts": "Verzendkosten",
+        "netTotal" : "Totaal",
+        "payButton": "Betaal"
+      },
+      "menuItem": {
+        "modal": {
+          "orderModalTitle" : "Bestellen is vandaag niet mogelijk",
+          "orderModalDescription": "Zie hieronder onze bestelstijden",
+          "closed": "Bestellen niet mogelijk"
+        },
+        "allergens": "Bevat de volgende allergenen",
+        "dish": "Gerechten",
+        "allergensList": {
+          "Gluten": "Gluten",
+          "Schaaldieren": "Schaaldieren",
+          "Eieren": "Eieren",
+          "Pinda": "Pinda",
+          "Vis": "Vis",
+          "Soja": "Soja",
+          "Melk": "Melk",
+          "Noten": "Noten",
+          "Selderij": "Selderij",
+          "Mosterd": "Mosterd",
+          "Sesamzaad": "Sesamzaad",
+          "Zwaveldioxide": "Zwaveldioxide",
+          "Lipine": "Lipine",
+          "Weekdieren": "Weekdieren"
+        },
+        "addToShoppingCart": "Voeg toe aan Winkelwagen"
+      },
+      "footer": {
+        "closed": "Gesloten",
+        "address": "Adres",
+        "openingHours": "Openingstijden"
+      },
+      "weekDays": {
+        "monday": "Maandag",
+        "tuesday": "Dinsdag",
+        "wednesday": "Woensdag",
+        "thursday": "Donderdag",
+        "friday": "Vrijdag",
+        "saturday": "Zaterdag",
+        "sunday": "Zondag"
+      },
+      "paymentView": {
+        "shippingDetails": {
+          "labels": {
+            "pay": "Afrekenen",
+            "deliveryAddress": "Bezorgadres",
+            "streetName": "Straatnaam",
+            "houseNumber": "Huisnummer",
+            "zipCode": "Postcode",
+            "city": "Woonplaats",
+            "companyName": "Bedrijfsnaam (optioneel)",
+            "finishButton": "Bestel en betaal"
+          },
+          "placeholderText": {
+            "deliveryAddress": "Type je bezorgadres",
+            "streetName": "Type je straatnaam",
+            "houseNumber": "Typ je Huisnummer",
+            "zipCode": "Typ je postcode",
+            "city": "Type je woonplaats",
+            "companyName": "Type je Bedrijfsnaam"
+          },
+            "errorMessage": {
+              "invalidZipCode": "Incorrecte Postcode. (1000XX)",
+              "streetName": "Straatnaam mag niet leeg zijn",
+              "houseNumber": "Huisnummer mag niet leeg zijn",
+              "zipCode": "Postcode mag niet leeg zijn",
+              "city": "Woonplaats mag niet leeg zijn"
+            }
+        },
+        "personalView": {
+          "labels": {
+            "personalDetails": "Persoonlijke gegevens",
+            "firstName": "Voornaam",
+            "lastName": "Achternaam",
+            "email": "E-mailadres",
+            "phoneNumber": "Telefoonnummer",
+            "deliveryTime": "Bezorgtijd"
+          },
+          "placeholderText": {
+            "firstName": "Typ je voornaam",
+            "lastName": "Typ je achternaam",
+            "email": "Typ je E-mailadres",
+            "phoneNumber": "Type je telefoonnummer"
+          },
+          "errorMessage": {
+            "firstName": "Voornaam mag niet leeg zijn",
+            "lastName": "Achternaam mag niet leeg zijn",
+            "email": "E-mailadres mag niet leeg zijn",
+            "phoneNumber": "Telefoonnummer mag niet leeg zijn",
+            "invalidPhoneNumber": "Voer een correcte telefoonnummer in",
+            "ideal": "Please choose a bank"
+          }
+        }
+      }
+    }

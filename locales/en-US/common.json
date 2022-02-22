@@ -1,0 +1,108 @@
+{
+  "generalWeb": {
+    "tabInfo": "Order your meal"
+  },
+      "shoppingCart": {
+        "title": "Shopping cart",
+        "emptyCart": "There seems to be nothing in your shopping cart.",
+        "subtotal": "Subtotal",
+        "addMeal": "Add a Meal",
+        "postageCosts": "Delivery Cost",
+        "netTotal" : "Total",
+        "payButton": "Pay"
+      },
+      "menuItem": {
+        "modal": {
+          "orderModalTitle" : "Ordering is not possible today",
+          "orderModalDescription": "See our order times below",
+          "closed": "Not possible to order"
+        },
+        "allergens": "Contains the following allergens",
+        "dish": "Dishes",
+        "allergensList": {
+          "Gluten": "Gluten",
+          "Schaaldieren": "Shellfish",
+          "Eieren": "Eggs",
+          "Pinda": "Peanuts",
+          "Vis": "Fish",
+          "Soja": "Soy",
+          "Melk": "Milk",
+          "Noten": "Nuts",
+          "Selderij": "Celery",
+          "Mosterd": "Mustard",
+          "Sesamzaad": "Sesame seed",
+          "Zwaveldioxide": "Sulphur dioxide",
+          "Lipine": "Lipin",
+          "Weekdieren": "Mollusks"
+        },
+        "addToShoppingCart": "Add to shopping cart"
+      },
+  "footer": {
+    "closed": "Closed",
+    "address": "Address",
+    "openingHours": "Opening Hours"
+  },
+  "weekDays": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+      "paymentView": {
+        "shippingDetails": {
+          "labels": {
+            "pay": "Payment",
+            "deliveryAddress": "Delivery Address",
+            "streetName": "Street name",
+            "houseNumber": "House number",
+            "zipCode": "Zipcode",
+            "city": "City",
+            "companyName": "Company name (optional)",
+            "finishButton": "Order and pay"
+          },
+          "placeholderText": {
+            "deliveryAddress": "Fill in your delivery address",
+            "streetName": "Fill in your street name",
+            "houseNumber": "Fill in your house number",
+            "zipCode": "Fill in your zipcode",
+            "city": "Fill in your city",
+            "companyName": "Fill in your company name"
+          },
+          "errorMessage": {
+            "invalidZipCode": "Invalid Zipcode. (1001 AA)",
+            "deliveryAddress": "Delivery address cannot be empty",
+            "streetName": "Street name cannot be empty",
+            "houseNumber": "House number cannot be empty",
+            "zipCode": "Zipcode cannot be empty",
+            "city": "City cannot be empty"
+          }
+        },
+        "personalView": {
+          "labels": {
+            "personalDetails": "Personal Details",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Mail-address",
+            "phoneNumber": "Phone number",
+            "deliveryTime": "Delivery Time"
+          },
+          "placeholderText": {
+            "firstName": "Fill in your first name",
+            "lastName": "Fill in your last name",
+            "email": "Fill in your mail-address",
+            "phoneNumber": "Fill in your phone number"
+          },
+          "errorMessage": {
+            "firstName": "First name cannot be empty",
+            "lastName": "Last name cannot be empty",
+            "email": "Email cannot be empty",
+            "phoneNumber": "Phone number cannot be empty",
+            "invalidPhoneNumber": "Invalid Phone number",
+            "ideal": "Please choose a bank"
+          }
+        }
+      }
+    }
