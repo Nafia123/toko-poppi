@@ -2,13 +2,12 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
-import { gql } from '@apollo/client';
 import useTranslation from 'next-translate/useTranslation';
+import fetch from 'node-fetch';
 import Header from '../../components/02-molecules/Header';
-import client from '../../apollo-client';
 import { LoaderComplete } from '../../components/02-molecules/Loader';
 
-const stripePromise = loadStripe('pk_test_51KMTBGFtTMP6ObZTa6yq443X9giUn0dBYyUwEsLRqXoOXk1XzKfmME7mu8vkBgywoS14oFnXzeEycJ3Ql1JmBuIz003kGrDWaF');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK!);
 
 export default function completed() {
   const [startAnimation, setStartAnimation] = useState(false);
@@ -39,28 +38,13 @@ export default function completed() {
     stripe!.confirmCardPayment(payment_intent_client_secret as string)
       .then(({ paymentIntent }) => {
         if (paymentIntent && paymentIntent.status === 'succeeded') {
-          const mutation = gql`
-              mutation {
-               updateOrder(
-                   id: ${recordId}
-                   data: {
-                     paymentFulfilled: true
-                     stripePaymentId: "${payment_intent}"
-                   }
-               ) {
-                 data {
-                  attributes {
-                   paymentFulfilled
-                   stripePaymentId
-                 }
-               }
-             }
-            }`;
-          client.mutate({ mutation }).then(() => {
-            setStartAnimation(true);
-          }).catch((e) => {
-            console.log(e);
-          });
+          fetch('/api/complete', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ payment_intent, recordId }),
+          }).then(() => setStartAnimation(true));
         }
       }).catch((e) => {
         console.log(e);

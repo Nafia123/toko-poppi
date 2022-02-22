@@ -139,11 +139,10 @@ export default function ViewPayment({
         paymentMethod: 'ideal',
       },
     };
-    fetch(`${process.env.STRAPI_LOCATION}/api/orders/payment`, {
+    fetch('/api/payment', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.STRAPI_AUTH_TOKEN}`,
       },
       body: JSON.stringify(orderData),
     }).then((res) => res.json()).then(async ({ orderDataRes, clientSecret }) => {
@@ -154,14 +153,16 @@ export default function ViewPayment({
             name: accountHolderName,
           },
         },
-        return_url: `${process.env.ROOT_LOCATION}/${router.locale}/completed?orderId=${orderId}&recordId=${orderDataRes.data.id}`,
+        return_url: `http://localhost:3000/${router.locale}/completed?orderId=${orderId}&recordId=${orderDataRes.data.id}`,
       });
       setLoading(true);
       if (error) {
+        console.log(error);
         alert(`Payment could not be completed ${error}`);
         setLoading(false);
       }
     }).catch((e) => {
+      console.log(e);
       alert(`Couldn't save data to strapi ${e}`);
       setLoading(false);
     });

@@ -39,7 +39,7 @@ interface GqlData{
   }
 }
 
-const stripePromise = loadStripe('pk_test_51KMTBGFtTMP6ObZTa6yq443X9giUn0dBYyUwEsLRqXoOXk1XzKfmME7mu8vkBgywoS14oFnXzeEycJ3Ql1JmBuIz003kGrDWaF');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK!);
 
 export async function getStaticProps({ locale } : Context) {
   const query = gql`
