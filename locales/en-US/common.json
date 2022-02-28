@@ -14,7 +14,7 @@
       "menuItem": {
         "modal": {
           "orderModalTitle" : "Ordering is not possible today",
-          "orderModalDescription": "See our order times below",
+          "orderModalDescription": "Check the website at a later time or contact us to see when we will deliver again",
           "closed": "Not possible to order"
         },
         "allergens": "Contains the following allergens",

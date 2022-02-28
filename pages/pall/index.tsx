@@ -156,11 +156,12 @@ function ViewMenus({
   posFixed: boolean,
   closed: boolean,
 }) {
-  const [orderClosed] = React.useState(closed);
-  const [openModal, setOpenModal] = React.useState(closed);
+  const [openModal, setOpenModal] = React.useState(false);
   const { menuItems: { data } } = gqlData;
   const { t } = useTranslation('common');
-
+  useEffect(() => {
+    setOpenModal(closed);
+  }, [closed]);
   Modal.setAppElement('#__next');
   function closeModal() {
     setOpenModal(false);
@@ -189,7 +190,7 @@ function ViewMenus({
             key={attributes.menuName}
             data={attributes}
             setShoppingCart={setShoppingCart}
-            orderClosed={orderClosed}
+            orderClosed={closed}
           />
         ))}
       </section>

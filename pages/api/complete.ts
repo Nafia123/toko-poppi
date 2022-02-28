@@ -35,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   return client.mutate({ mutation })
     .then((response) => {
       const { updateOrder: { data: { attributes } } } = response.data;
+      console.log('fetching');
       fetch(`${process.env.STRAPI_LOCATION}/api/orders/mail`, {
         method: 'POST',
         headers: {
@@ -42,10 +43,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           Authorization: `Bearer ${process.env.STRAPI_AUTH_TOKEN}`,
         },
         body: JSON.stringify({ attributes, locale }),
-      }).then((emailResponse) => {
-        res.status(200).json({ response, ...emailResponse });
-      });
+      }).then((emailResponse) => res.status(200).json({ response, ...emailResponse }));
     }).catch((e) => {
-      res.status(500).json(e);
+      console.log(e);
+      return res.status(500).json(e);
     });
 }
