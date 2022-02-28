@@ -141,7 +141,7 @@ export function PaymentSection({ cartItemList, setCheckout, showPayButton }: {
             {t('shoppingCart.payButton')}
             {' '}
             (
-            {showCorrectPrice(cartItemList.totalPrice + 0.5)}
+            {showCorrectPrice(cartItemList.totalPrice)}
             )
           </p>
         </button>
