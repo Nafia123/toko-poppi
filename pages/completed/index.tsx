@@ -14,7 +14,7 @@ export default function completed() {
   const [stripe, setStripe] = useState<Stripe>();
   const router = useRouter();
   const { t } = useTranslation('order');
-
+  const { locale } = useRouter();
   useEffect(() => {
     const urlContainParams = window.location.search.length === 0;
     if (urlContainParams) window.location.href = '/';
@@ -43,7 +43,7 @@ export default function completed() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ payment_intent, recordId }),
+            body: JSON.stringify({ payment_intent, recordId, locale }),
           }).then(() => setStartAnimation(true));
         }
       }).catch((e) => {
