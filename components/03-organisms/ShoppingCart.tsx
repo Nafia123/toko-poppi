@@ -257,7 +257,7 @@ export function MobileShoppingCart({ shoppingItems, openModal }: {
                 {t('shoppingCart.title')}
                 {' '}
                 (
-                {showCorrectPrice(shoppingItems.totalPrice + 0.5)}
+                {showCorrectPrice(shoppingItems.totalPrice)}
                 )
               </p>
             </button>
