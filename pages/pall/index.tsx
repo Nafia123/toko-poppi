@@ -264,6 +264,7 @@ export default function Pall(gqlData: GqlData) {
     for (let i = 1; i < 6; i++) {
       const nextDate = newDate.set({ day: newDate.day + i });
       const nextDay = dayOfWeekAsString(nextDate.weekday - 1);
+      if (newDate.weekNumber !== nextDate.weekNumber) break;
       const orderTimeArrayNextWeek = pallOrderDay.data !== null
         ? pallOrderDay.data.attributes[nextDay as keyof WeekTimeType] : [];
       orderTimeArrayNextWeek.forEach(({ from, to, lunchBreak }) => {
