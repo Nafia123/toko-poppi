@@ -43,7 +43,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK!);
 
 export async function getStaticProps({ locale } : Context) {
   const query = gql`
-     query  { menuItems(locale: "${locale.slice(0, 2)}", filters:{visible: {eq:true}}, pagination:{limit:3}){
+     query  { menuItems(locale: "${locale.slice(0, 2)}", filters:{visible: {eq:true}}, pagination:{limit:5}){
   data {
     attributes{
       menuName
