@@ -50,7 +50,7 @@ export default function completed() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ payment_intent, recordId, locale }),
-          }).then(() => setStartAnimation(false));
+          }).then(() => setStartAnimation(true));
         }
       }).catch((e) => {
         console.log(e);
