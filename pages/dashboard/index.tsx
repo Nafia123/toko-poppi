@@ -55,7 +55,7 @@ export default function completed() {
       }).catch((e) => {
         console.log(e);
       });
-  }, [stripe]);
+  }, [router]);
   return (
     <div>
       <Head>
