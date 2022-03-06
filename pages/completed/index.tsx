@@ -50,12 +50,12 @@ export default function completed() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ payment_intent, recordId, locale }),
-          }).then(() => setStartAnimation(true));
+          }).then(() => setStartAnimation(false));
         }
       }).catch((e) => {
         console.log(e);
       });
-  }, [stripe]);
+  }, [router]);
   return (
     <div>
       <Head>
@@ -66,20 +66,22 @@ export default function completed() {
       <Header />
       <section>
         {paymentFailed ? (
-          <div className="grid grid-cols-6 md:grid-cols-3">
-            <div className="col-start-2 mx-auto col-span-4 md:col-start-2 md:col-end-4 flex px-10 md:px-5 md:h-40">
+          <div className="grid grid-cols-6 md:grid-cols-5">
+            <div className="col-start-2 mx-auto col-span-4 md:col-start-3 md:col-end-4 flex px-10 md:px-5 md:h-40">
               <p className="text-5xl text-center font-bold text-gray-600 my-auto">
                 <LoaderFailed completeLoader={startAnimation} />
-                <p className="text-5xl text-center font-bold text-gray-600 my-auto animate-bounce">{startAnimation ? t('completeOrder.failMessage') : 'Loading'}</p>
+                {startAnimation ? <p className="text-5xl text-center font-bold text-gray-600 my-auto mx-auto">{t('completeOrder.failMessage')}</p>
+                  : <p className="text-5xl text-center font-bold text-gray-600 my-auto mx-auto animate-bounce">Loading</p>}
               </p>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-6 md:grid-cols-4">
-            <div className="col-start-2 mx-auto col-span-4 md:col-start-2 md:col-end-4 flex px-10 md:px-5 md:h-40">
+          <div className="grid grid-cols-6 md:grid-cols-5">
+            <div className="col-start-2 mx-auto col-span-4 md:col-start-3 md:col-end-4 flex px-10 md:px-5 md:h-40">
               <p className="text-5xl text-center font-bold text-gray-600 my-auto">
                 <LoaderComplete completeLoader={startAnimation} />
-                <p className="text-5xl text-center font-bold text-gray-600 my-auto animate-bounce">{startAnimation ? t('completeOrder.confirmationMessage') : 'Loading'}</p>
+                {startAnimation ? <p className="text-5xl text-center font-bold text-gray-600 my-auto mx-auto">{t('completeOrder.confirmationMessage')}</p>
+                  : <p className="text-5xl text-center font-bold text-gray-600 my-auto mx-auto animate-bounce">Loading</p>}
               </p>
             </div>
           </div>
