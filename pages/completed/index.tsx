@@ -35,7 +35,11 @@ export default function completed() {
     if (!stripe || !payment_intent_client_secret) {
       return;
     }
-    setPaymentFailed(redirect_status === 'failed');
+    if (redirect_status === 'failed') {
+      setPaymentFailed(redirect_status === 'failed');
+      setStartAnimation(true);
+      return;
+    }
 
     stripe!.confirmCardPayment(payment_intent_client_secret as string)
       .then(({ paymentIntent }) => {
