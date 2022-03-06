@@ -149,6 +149,7 @@ export async function getStaticProps({ locale } : Context) {
         }
       }
 } `;
+  Settings.defaultZone = 'Europe/Amsterdam';
   const { data } = await client.query<GqlData>({ query });
   const newDate = DateTime.local();
   const deliveryTimesArray: DateTime[] = [];
