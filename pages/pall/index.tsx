@@ -333,8 +333,8 @@ export default function Pall(
       setClosed(true);
       return;
     }
-
-    if (orders.data.length >= pallLimitOrder.data.attributes.Limit) {
+    if ((orders.data && pallLimitOrder.data)
+        && orders.data.length >= pallLimitOrder.data.attributes.Limit) {
       setOrderIsFull(true);
     }
     setDeliveryTimes(newDeliveryTimes);
