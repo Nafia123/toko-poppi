@@ -7,6 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    if (req.body.model === 'order') await res.unstable_revalidate('/dashboard');
     await res.unstable_revalidate('/pall');
     await res.unstable_revalidate('/nl-NL/pall');
     return res.json({ revalidated: true });
