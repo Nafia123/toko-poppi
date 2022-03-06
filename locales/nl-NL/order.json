@@ -1,6 +1,8 @@
 {
   "completeOrder": {
-    "confirmationMessage": "Uw bestelling is voltooid. Geniet van uw maaltijd :)",
+    "confirmationMessage": "Uw bestelling is voltooid. Geniet van uw maaltijd!",
+    "orderMessage": "Uw Bestelnummer is ",
+    "emailMessage": "Er is ook een mail verzonden met uw bestelling",
     "failMessage": "Er is iets fout gegaan met uw bestelling. Probeer het later nogmaals"
   }
 }

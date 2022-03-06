@@ -12,6 +12,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK!);
 export default function completed() {
   const [startAnimation, setStartAnimation] = useState(false);
   const [paymentFailed, setPaymentFailed] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
   const [stripe, setStripe] = useState<Stripe>();
   const router = useRouter();
   const { t } = useTranslation('order');
@@ -30,7 +31,7 @@ export default function completed() {
   useEffect(() => {
     const {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      payment_intent_client_secret, payment_intent, recordId, redirect_status,
+      payment_intent_client_secret, orderId, payment_intent, recordId, redirect_status,
     } = router.query;
     if (!stripe || !payment_intent_client_secret) {
       return;
@@ -40,7 +41,7 @@ export default function completed() {
       setStartAnimation(true);
       return;
     }
-
+    setOrderNumber((orderId as string).slice(8));
     stripe!.confirmCardPayment(payment_intent_client_secret as string)
       .then(({ paymentIntent }) => {
         if (paymentIntent && paymentIntent.status === 'succeeded') {
@@ -78,9 +79,22 @@ export default function completed() {
         ) : (
           <div className="grid grid-cols-6 md:grid-cols-5">
             <div className="col-start-2 mx-auto col-span-4 md:col-start-3 md:col-end-4 flex px-10 md:px-5 md:h-40">
-              <p className="text-5xl text-center font-bold text-gray-600 my-auto">
+              <p className="text-5xl text-center text-gray-600 my-auto">
                 <LoaderComplete completeLoader={startAnimation} />
-                {startAnimation ? <p className="text-5xl text-center font-bold text-gray-600 my-auto mx-auto">{t('completeOrder.confirmationMessage')}</p>
+                {startAnimation ? (
+                  <div>
+                    <p className="text-5xl text-center  text-gray-600 my-auto mx-auto">
+                      {t('completeOrder.confirmationMessage')}
+                    </p>
+                    <p className="text-5xl text-center text-gray-600 my-auto mx-auto">
+                      {t('completeOrder.orderMessage')}
+                      <span className="font-bold underline">{orderNumber}</span>
+                    </p>
+                    <p className="text-5xl text-center text-gray-600 my-auto mx-auto">
+                      {t('completeOrder.emailMessage')}
+                    </p>
+                  </div>
+                )
                   : <p className="text-5xl text-center font-bold text-gray-600 my-auto mx-auto animate-bounce">Loading</p>}
               </p>
             </div>

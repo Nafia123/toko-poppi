@@ -1,6 +1,8 @@
 {
   "completeOrder": {
     "confirmationMessage": "Your order has been completed. Enjoy your meal!",
+    "orderMessage": "Your order number is ",
+    "emailMessage": "An email has also been sent with your order",
     "failMessage": "Something went wrong with your order. Please try again later"
   }
   }
