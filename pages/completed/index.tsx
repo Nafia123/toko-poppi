@@ -32,10 +32,11 @@ export default function completed() {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       payment_intent_client_secret, payment_intent, recordId, redirect_status,
     } = router.query;
-    setPaymentFailed(redirect_status === 'false');
     if (!stripe || !payment_intent_client_secret) {
       return;
     }
+    setPaymentFailed(redirect_status === 'failed');
+
     stripe!.confirmCardPayment(payment_intent_client_secret as string)
       .then(({ paymentIntent }) => {
         if (paymentIntent && paymentIntent.status === 'succeeded') {
