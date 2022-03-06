@@ -6,10 +6,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(401).json({ message: 'Invalid token' });
   }
 
-  if (req.body.model === 'order') {
-    return res.status(401).json({ message: 'Not updating on new order' });
-  }
-
   try {
     await res.unstable_revalidate('/pall');
     await res.unstable_revalidate('/nl-NL/pall');

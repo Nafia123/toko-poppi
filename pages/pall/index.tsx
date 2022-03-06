@@ -32,6 +32,16 @@ interface GqlData{
       attributes: CompanyFormData
     }
   }
+  pallLimitOrder:{
+    data: {
+      attributes: {
+        Limit: number
+      }
+    }
+  }
+  orders: {
+    data: Array<{ attributes: { deliveryTime: DateTime } }>
+  }
   pallOrderDay: {
     data: {
       attributes: WeekTimeType
@@ -42,6 +52,8 @@ interface GqlData{
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK!);
 
 export async function getStaticProps({ locale } : Context) {
+  const today = DateTime.now();
+  const startTime = today.set({ hour: 0, minute: 0 });
   const query = gql`
      query  { menuItems(locale: "${locale.slice(0, 2)}", filters:{visible: {eq:true}}, pagination:{limit:5}){
   data {
@@ -68,6 +80,20 @@ export async function getStaticProps({ locale } : Context) {
     }
   }
 } 
+ orders(filters:{deliveryTime:{gte:"${startTime.toString()}"}}){
+    data{
+      attributes{
+        deliveryTime
+      }
+    }
+  }
+   pallLimitOrder{
+    data{
+      attributes{
+        Limit
+      }      
+    }
+  }
   pallInfo {
   data {
     attributes{
@@ -77,7 +103,6 @@ export async function getStaticProps({ locale } : Context) {
       city
       zipcode
   }
-
   }}
    pallOrderDay{
         data{
@@ -125,12 +150,36 @@ export async function getStaticProps({ locale } : Context) {
       }
 } `;
   const { data } = await client.query<GqlData>({ query });
+  const newDate = DateTime.local();
+  const deliveryTimesArray: DateTime[] = [];
+  for (let i = 1; i < 6; i++) {
+    const nextDate = newDate.set({ day: newDate.day + i });
+    const nextDay = dayOfWeekAsString(nextDate.weekday - 1);
+    if (newDate.weekNumber !== nextDate.weekNumber && nextDate.weekday > 6) break;
+    const orderTimeArrayNextWeek = data.pallOrderDay.data !== null
+      ? data.pallOrderDay.data.attributes[nextDay as keyof WeekTimeType] : [];
+    orderTimeArrayNextWeek.forEach(({ from, to, lunchBreak }) => {
+      if (lunchBreak === null || from === null || to === null) {
+        return;
+      }
+      deliveryTimesArray.push(nextDate.set({
+        hour: parseInt(lunchBreak.slice(0, 2), 10),
+        minute: parseInt(lunchBreak.slice(3, 5), 10),
+      }));
+    });
+  }
   return {
     props: {
-      menuItems: data.menuItems,
-      pallInfo: data.pallInfo,
-      pallOrderDay: data.pallOrderDay,
+      gqlData: {
+        menuItems: data.menuItems,
+        pallInfo: data.pallInfo,
+        pallOrderDay: data.pallOrderDay,
+        orders: data.orders,
+        pallLimitOrder: data.pallLimitOrder,
+      },
+      deliveryTimesArray: JSON.stringify(deliveryTimesArray),
     },
+    revalidate: 43200,
   };
 }
 
@@ -147,7 +196,7 @@ const CUSTOM_STYLES = {
 };
 
 function ViewMenus({
-  gqlData, setShoppingCart, shoppingCart, posFixed, closed, setCheckout,
+  gqlData, setShoppingCart, shoppingCart, posFixed, closed, setCheckout, orderIsFull,
 }:
 { gqlData: GqlData,
   shoppingCart: ShoppingCartList,
@@ -155,6 +204,7 @@ function ViewMenus({
   setCheckout: React.Dispatch<React.SetStateAction<boolean>>,
   posFixed: boolean,
   closed: boolean,
+  orderIsFull: boolean,
 }) {
   const [openModal, setOpenModal] = React.useState(false);
   const { menuItems: { data } } = gqlData;
@@ -162,6 +212,9 @@ function ViewMenus({
   useEffect(() => {
     setOpenModal(closed);
   }, [closed]);
+  useEffect(() => {
+    setOpenModal(orderIsFull);
+  }, [orderIsFull]);
   Modal.setAppElement('#__next');
   function closeModal() {
     setOpenModal(false);
@@ -180,10 +233,19 @@ function ViewMenus({
           <button type="button" onClick={() => closeModal()}>
             <p className="text-2xl font-bold text-right absolute right-0 top-0 mr-2">X</p>
           </button>
-          <div className="h-96 w-96 text-center">
-            <p className=" text-2xl font-bold">{t('menuItem.modal.orderModalTitle')}</p>
-            <p className=" text-xl">{t('menuItem.modal.orderModalDescription')}</p>
-          </div>
+          {
+            orderIsFull ? (
+              <div className="h-96 w-96 text-center">
+                <p className=" text-2xl font-bold">{t('menuItem.modalIsFull.orderModalTitle')}</p>
+                <p className=" text-xl">{t('menuItem.modalIsFull.orderModalDescription')}</p>
+              </div>
+            ) : (
+              <div className="h-96 w-96 text-center">
+                <p className=" text-2xl font-bold">{t('menuItem.modal.orderModalTitle')}</p>
+                <p className=" text-xl">{t('menuItem.modal.orderModalDescription')}</p>
+              </div>
+            )
+          }
         </Modal>
         {data.map(({ attributes }) => (
           <MenuItem
@@ -207,12 +269,17 @@ function ViewMenus({
   );
 }
 
-export default function Pall(gqlData: GqlData) {
+export default function Pall(
+  { deliveryTimesArray, gqlData }: { deliveryTimesArray:string, gqlData:GqlData },
+) {
   const { t } = useTranslation('common');
-  const { pallInfo, pallOrderDay } = gqlData;
+  const {
+    pallInfo, pallOrderDay, pallLimitOrder, orders,
+  } = gqlData;
   const [posFixed, setPosFixed] = useState(false);
   const [checkout, setCheckout] = useState(false);
   const [closed, setClosed] = useState(false);
+  const [orderIsFull, setOrderIsFull] = useState(false);
   const router = useRouter();
   const [deliveryTimes, setDeliveryTimes] = useState<DateTime[]>([]);
   const [shoppingCart, setShoppingCart] = useState<ShoppingCartList>({
@@ -235,7 +302,8 @@ export default function Pall(gqlData: GqlData) {
     }
   }, [checkout]);
   useEffect(() => {
-    const deliveryTimesArray: DateTime[] = [];
+    const newDeliveryTimes: DateTime[] = JSON.parse(deliveryTimesArray)
+      .map((time: string) => DateTime.fromISO(time));
     Settings.defaultZone = 'Europe/Amsterdam';
     Settings.defaultLocale = router.locale || 'en-US';
     const newDate = DateTime.local();
@@ -255,34 +323,21 @@ export default function Pall(gqlData: GqlData) {
         minute: parseInt(to.slice(3, 5), 10),
       });
       if (newDate >= fromDate && newDate <= toDate) {
-        deliveryTimesArray.push(DateTime.fromObject({
+        newDeliveryTimes.push(DateTime.fromObject({
           hour: parseInt(lunchBreak.slice(0, 2), 10),
           minute: parseInt(lunchBreak.slice(3, 5), 10),
         }));
       }
     });
-    for (let i = 1; i < 6; i++) {
-      const nextDate = newDate.set({ day: newDate.day + i });
-      const nextDay = dayOfWeekAsString(nextDate.weekday - 1);
-      if (newDate.weekNumber !== nextDate.weekNumber) break;
-      const orderTimeArrayNextWeek = pallOrderDay.data !== null
-        ? pallOrderDay.data.attributes[nextDay as keyof WeekTimeType] : [];
-      orderTimeArrayNextWeek.forEach(({ from, to, lunchBreak }) => {
-        if (lunchBreak === null || from === null || to === null) {
-          return;
-        }
-        deliveryTimesArray.push(nextDate.set({
-          hour: parseInt(lunchBreak.slice(0, 2), 10),
-          minute: parseInt(lunchBreak.slice(3, 5), 10),
-        }));
-      });
-    }
-
-    if (deliveryTimesArray.length === 0) {
+    if (newDeliveryTimes.length === 0) {
       setClosed(true);
       return;
     }
-    setDeliveryTimes(deliveryTimesArray);
+
+    if (orders.data.length >= pallLimitOrder.data.attributes.Limit) {
+      setOrderIsFull(true);
+    }
+    setDeliveryTimes(newDeliveryTimes);
   }, []);
   return (
     <div>
@@ -300,6 +355,7 @@ export default function Pall(gqlData: GqlData) {
             setCheckout={setCheckout}
             posFixed={posFixed}
             closed={closed}
+            orderIsFull={orderIsFull}
           />
         )
         : (

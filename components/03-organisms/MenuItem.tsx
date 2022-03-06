@@ -139,7 +139,7 @@ export default function MenuItem({ data, setShoppingCart, orderClosed } : PropDa
             <div className="md:mb-10" />
             <p className="text-xl md:text-4xl font-medium mt-2 md:mt-10 md:absolute bottom-5">{showCorrectPrice(menuPrice)}</p>
           </div>
-          <img src={menuImage.data !== null ? menuImage.data.attributes.url : '/daal.png'} alt="Dish" className="mx-1 mt-10 w-20 h-20 md:mr-1 md:mt-0 sm:mt-0 md:w-52 md:h-52 sm:w-40 sm:h-40 right-5 relative my-0 " />
+          <img src={menuImage.data !== null ? menuImage.data.attributes.url : '/daal.png'} alt="Dish" className="object-cover mx-1 mt-10 w-20 h-20 md:mr-1 md:mt-0 sm:mt-0 md:w-52 md:h-52 sm:w-40 sm:h-40 right-5 relative my-0 " />
         </div>
       </section>
       {showOptions ? (

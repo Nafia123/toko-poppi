@@ -5,12 +5,13 @@ import { loadStripe, Stripe } from '@stripe/stripe-js';
 import useTranslation from 'next-translate/useTranslation';
 import fetch from 'node-fetch';
 import Header from '../../components/02-molecules/Header';
-import { LoaderComplete } from '../../components/02-molecules/Loader';
+import { LoaderComplete, LoaderFailed } from '../../components/02-molecules/Loader';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK!);
 
 export default function completed() {
   const [startAnimation, setStartAnimation] = useState(false);
+  const [paymentFailed, setPaymentFailed] = useState(false);
   const [stripe, setStripe] = useState<Stripe>();
   const router = useRouter();
   const { t } = useTranslation('order');
@@ -29,9 +30,9 @@ export default function completed() {
   useEffect(() => {
     const {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      payment_intent_client_secret, payment_intent, recordId,
+      payment_intent_client_secret, payment_intent, recordId, redirect_status,
     } = router.query;
-
+    setPaymentFailed(redirect_status === 'false');
     if (!stripe || !payment_intent_client_secret) {
       return;
     }
@@ -59,14 +60,26 @@ export default function completed() {
       </Head>
       <Header />
       <section>
-        <div className="grid grid-cols-6 md:grid-cols-3">
-          <div className="col-start-2 col-span-4 md:col-start-2 md:col-end-3 flex px-10 md:px-5  md:h-40 align-middle">
-            <p className="text-5xl text-center font-bold text-gray-600 my-auto">
-              <LoaderComplete completeLoader={startAnimation} />
-              {t('completeOrder.confirmationMessage')}
-            </p>
+        {paymentFailed ? (
+          <div className="grid grid-cols-6 md:grid-cols-3">
+            <div className="col-start-2 col-span-4 md:col-start-2 md:col-end-3 flex px-10 md:px-5  md:h-40 align-middle">
+              <p className="text-5xl text-center font-bold text-gray-600 my-auto">
+                <LoaderFailed completeLoader={startAnimation} />
+                {t('completeOrder.failMessage')}
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-6 md:grid-cols-3">
+            <div className="col-start-2 col-span-4 md:col-start-2 md:col-end-3 flex px-10 md:px-5  md:h-40 align-middle">
+              <p className="text-5xl text-center font-bold text-gray-600 my-auto">
+                <LoaderComplete completeLoader={startAnimation} />
+                {t('completeOrder.confirmationMessage')}
+              </p>
+            </div>
+          </div>
+        )}
+
       </section>
 
     </div>

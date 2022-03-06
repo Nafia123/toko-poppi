@@ -17,6 +17,11 @@
           "orderModalDescription": "Kijk op een later moment op de website of neem contact met ons op om te kijken wanneer we weer gaan bezorgen",
           "closed": "Bestellen niet mogelijk"
         },
+        "modalIsFull": {
+          "orderModalTitle" : "Wij kunnen vandaag geen maaltijden meer leveren",
+          "orderModalDescription": "Kies een andere bezorgdatum bij het bestellen",
+          "closed": "Leveren is niet mogelijk"
+        },
         "allergens": "Bevat de volgende allergenen",
         "dish": "Gerechten",
         "allergensList": {

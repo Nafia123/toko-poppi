@@ -17,6 +17,11 @@
           "orderModalDescription": "Check the website at a later time or contact us to see when we will deliver again",
           "closed": "Not possible to order"
         },
+        "modalIsFull": {
+          "orderModalTitle" : "We can't deliver meals today",
+          "orderModalDescription": "Choose a different delivery date when ordering",
+          "closed": "Delivery not possible"
+        },
         "allergens": "Contains the following allergens",
         "dish": "Dishes",
         "allergensList": {
