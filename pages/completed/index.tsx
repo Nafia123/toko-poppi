@@ -67,19 +67,19 @@ export default function completed() {
       <section>
         {paymentFailed ? (
           <div className="grid grid-cols-6 md:grid-cols-3">
-            <div className="col-start-2 col-span-4 md:col-start-2 md:col-end-3 flex px-10 md:px-5  md:h-40 align-middle">
+            <div className="col-start-2 mx-auto col-span-4 md:col-start-2 md:col-end-4 flex px-10 md:px-5 md:h-40">
               <p className="text-5xl text-center font-bold text-gray-600 my-auto">
                 <LoaderFailed completeLoader={startAnimation} />
-                <p className="text-5xl text-center font-bold text-gray-600 my-auto transition-opacity">{startAnimation ? t('completeOrder.failMessage') : 'Loading'}</p>
+                <p className="text-5xl text-center font-bold text-gray-600 my-auto animate-bounce">{startAnimation ? t('completeOrder.failMessage') : 'Loading'}</p>
               </p>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-6 md:grid-cols-3">
-            <div className="col-start-2 col-span-4 md:col-start-2 md:col-end-3 flex px-10 md:px-5  md:h-40 align-middle">
+          <div className="grid grid-cols-6 md:grid-cols-4">
+            <div className="col-start-2 mx-auto col-span-4 md:col-start-2 md:col-end-4 flex px-10 md:px-5 md:h-40">
               <p className="text-5xl text-center font-bold text-gray-600 my-auto">
                 <LoaderComplete completeLoader={startAnimation} />
-                <p className="text-5xl text-center font-bold text-gray-600 my-auto transition-opacity">{startAnimation ? t('completeOrder.confirmationMessage') : 'Loading'}</p>
+                <p className="text-5xl text-center font-bold text-gray-600 my-auto animate-bounce">{startAnimation ? t('completeOrder.confirmationMessage') : 'Loading'}</p>
               </p>
             </div>
           </div>
