@@ -338,6 +338,7 @@ export default function Pall(
         && orders.data.length >= pallLimitOrder.data.attributes.Limit) {
       setOrderIsFull(true);
     }
+    newDeliveryTimes.sort();
     setDeliveryTimes(newDeliveryTimes);
   }, []);
   return (
