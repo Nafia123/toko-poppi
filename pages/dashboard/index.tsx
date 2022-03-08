@@ -29,10 +29,9 @@ interface OrderData{
 export async function getStaticProps() {
   const today = DateTime.now();
   const startTime = today.set({ hour: 0, minute: 0 });
-  const endTime = today.set({ hour: 23, minute: 59 });
   const query = gql`
      query  { 
- orders(filters:{deliveryTime:{gte:"${startTime.toString()}", lte:"${endTime.toString()}"}, paymentFulfilled:{eq:true}}){
+ orders(filters:{deliveryTime:{gte:"${startTime.toString()}"}, paymentFulfilled:{eq:true}}){
     data{
       attributes{
         deliveryTime
@@ -54,10 +53,14 @@ export async function getStaticProps() {
     props: {
       orders: data.orders,
     },
+    revalidate: 43200,
   };
 }
 
 export default function Dashboard({ orders: { data } } : GqlData) {
+  data.sort((a, b) => (DateTime.fromISO(
+    a.attributes.deliveryTime.toString(),
+  ).toMillis() - DateTime.fromISO(b.attributes.deliveryTime.toString()).toMillis()));
   return (
     <div>
       <Head>
