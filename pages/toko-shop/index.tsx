@@ -2,37 +2,35 @@ import React from 'react';
 import { gql } from '@apollo/client';
 import { DateTime, Settings } from 'luxon';
 import { Context } from 'vm';
+import { MenuItemData } from '../../_types/MenuItemModel';
 import client from '../../apollo-client';
-import { CompanyFormData } from '../../components/03-organisms/PaymentView';
 import { WeekMenuType, WeekTimeType } from '../../_types/WeekTimeType';
 import { getMenuItemGraphql, setupDeliveryTimes } from '../../utils/helper';
 import ShopPage from '../../components/04-page/ShopPage';
 import { GqlData } from '../../_types/TokoData';
 
-interface PallInfo{
-  pallInfo: {
-    data: {
-      attributes: CompanyFormData
-    }
+interface TokoInfo{
+  menuItems: {
+    data: MenuItemData[]
   }
-  pallLimitOrder:{
+  tokoLimitOrder:{
     data: {
       attributes: {
         Limit: number
       }
     }
   }
-  pallWeekMenu: {
-    data: {
-      attributes: WeekMenuType
-    }
-  }
   orders: {
     data: Array<{ attributes: { deliveryTime: DateTime } }>
   }
-  pallOrderDay: {
+  tokoOrderDay: {
     data: {
       attributes: WeekTimeType
+    }
+  }
+  tokoWeekMenu: {
+    data: {
+      attributes: WeekMenuType
     }
   }
 }
@@ -41,31 +39,7 @@ export async function getStaticProps({ locale } : Context) {
   const today = DateTime.now();
   const startTime = today.set({ hour: 0, minute: 0 });
   const query = gql`
-     query  { menuItems(locale: "${locale.slice(0, 2)}", filters:{pallVisible: {eq:true}}, pagination:{limit:5}){
-  data {
-    attributes{
-      menuName
-      menuDish {
-        dishName
-        dishDescription
-        dishOptions {
-         dishOption
-        }
-      }
-      menuPrice
-      allergens {
-        allergens
-      }
-      menuImage{
-        data {
-          attributes{
-            url
-          }
-        }
-      }
-    }
-  }
-} 
+     query  {
  orders(filters:{deliveryTime:{gte:"${startTime.toString()}"}}){
     data{
       attributes{
@@ -73,24 +47,14 @@ export async function getStaticProps({ locale } : Context) {
       }
     }
   }
-   pallLimitOrder{
+   tokoLimitOrder{
     data{
       attributes{
         Limit
       }      
     }
   }
-  pallInfo {
-  data {
-    attributes{
-      streetName
-      houseNumber
-      companyName
-      city
-      zipcode
-  }
-  }}
-   pallWeekMenu(locale: "${locale.slice(0, 2)}"){
+    tokoWeekMenu(locale: "${locale.slice(0, 2)}"){
         data{
           attributes{
             monday{
@@ -117,7 +81,7 @@ export async function getStaticProps({ locale } : Context) {
           }
         }
       }
-   pallOrderDay{
+   tokoOrderDay{
         data{
           attributes{
             monday{
@@ -163,16 +127,15 @@ export async function getStaticProps({ locale } : Context) {
       }
 } `;
   Settings.defaultZone = 'Europe/Amsterdam';
-  const { data } = await client.query<PallInfo>({ query });
-  const deliveryTimesArray = setupDeliveryTimes(data.pallWeekMenu);
+  const { data } = await client.query<TokoInfo>({ query });
+  const deliveryTimesArray = setupDeliveryTimes(data.tokoWeekMenu);
   return {
     props: {
       gqlData: {
-        shopInfo: data.pallInfo,
-        orderDay: data.pallOrderDay,
+        orderDay: data.tokoOrderDay,
         orders: data.orders,
-        limitOrder: data.pallLimitOrder,
-        weekMenu: data.pallWeekMenu,
+        limitOrder: data.tokoLimitOrder,
+        weekMenu: data.tokoWeekMenu,
       },
       deliveryTimesArray: JSON.stringify(deliveryTimesArray),
     },
@@ -180,10 +143,11 @@ export async function getStaticProps({ locale } : Context) {
   };
 }
 
-export default function Pall(
+export default function TokoShop(
   { deliveryTimesArray, gqlData }: { deliveryTimesArray:string, gqlData:GqlData },
 ) {
   return (
+  // <div>Empty</div>
     <ShopPage gqlData={gqlData} deliveryTimesArray={deliveryTimesArray} />
   );
 }

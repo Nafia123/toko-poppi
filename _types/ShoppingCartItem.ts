@@ -4,6 +4,7 @@ export interface ShoppingCartItem {
   amount: number,
   name: string,
   id: string,
+  pickupDate:string
 }
 
 export interface ShoppingCartList {

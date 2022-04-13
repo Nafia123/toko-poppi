@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Modal from 'react-modal';
 import React, { useEffect } from 'react';
 import useTranslation from 'next-translate/useTranslation';
+import { DateTime } from 'luxon';
 import { showCorrectPrice } from '../../utils/helper';
 import { ShoppingCartItem, ShoppingCartList } from '../../_types/ShoppingCartItem';
 
@@ -63,8 +64,10 @@ function CartItem({ shoppingCart, setShoppingCart, showPayButton }: {
   showPayButton: boolean
 }) {
   const {
-    option, amount, name, price,
+    option, amount, name, price, pickupDate,
   } = shoppingCart;
+  const { t } = useTranslation('common');
+
   return (
     <div className="px-4 py-2">
       <div className="flex justify-between">
@@ -81,6 +84,14 @@ function CartItem({ shoppingCart, setShoppingCart, showPayButton }: {
       </div>
       <div>
         <p>{option.join(', ')}</p>
+      </div>
+      <div className="mt-2 text-md ">
+        <span className="font-semibold">
+          {t('shoppingCart.pickupDate')}
+          :
+        </span>
+        {' '}
+        <span className="italic flex-wrap">{DateTime.fromISO(pickupDate).toFormat('cccc dd/MM')}</span>
       </div>
       <div className="flex justify-end mt-2">
         {!showPayButton && amount === 1 ? null
@@ -197,7 +208,7 @@ export function WebShoppingCart(
 
   return (
     <section>
-      <div className="divide-y divide-solid">
+      <div className="divide-y divide-solid text-gray-800">
         <div className="flex justify-between lg:block">
           <p className="text-2xl my-5 font-bold text-center">{t('shoppingCart.title')}</p>
         </div>

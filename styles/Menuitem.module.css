@@ -1,5 +1,8 @@
 .options{
-    background-color: #f8f5f2;
+    background-color: #ded9d9;
     min-height: 100px;
-
+}
+.payment{
+    background-color: #f1efef;
+    min-height: 100px;
 }

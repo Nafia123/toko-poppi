@@ -4,6 +4,7 @@
       },
       "shoppingCart": {
         "title": "Winkelmandje",
+        "pickupDate": "Ophaaldatum",
         "emptyCart": "Niks in je winkelmandje. Voeg een maaltijd toe",
         "addMeal": "Voeg een maaltijd toe",
         "subtotal": "Subtotaal",
@@ -61,6 +62,7 @@
           "labels": {
             "pay": "Afrekenen",
             "deliveryAddress": "Bezorgadres",
+            "pickupAddress": "Ophaaladres",
             "streetName": "Straatnaam",
             "houseNumber": "Huisnummer",
             "zipCode": "Postcode",

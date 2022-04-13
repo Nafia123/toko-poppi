@@ -1,5 +1,7 @@
 {
   "frontPage": {
-    "shopDescription": "Authentic Indian, Surinamese & Thai foods"
+    "shopDescription": "Authentic Indian, Surinamese & Thai foods",
+    "orderButton": "Start Ordering meals",
+    "menuDescription": "Toko Poppi offers fresh Indian meals from Monday to Saturday"
   }
 }

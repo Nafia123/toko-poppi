@@ -53,7 +53,6 @@ interface PayFormElements {
   lastName: string,
   email: string,
   phoneNumber: string,
-  deliveryTimeIndex: number
 }
 
 export interface CompanyFormData {
@@ -65,7 +64,7 @@ export interface CompanyFormData {
 }
 
 export default function ViewPayment({
-  shoppingCart, setShoppingCart, setCheckout, deliveryTimes, posFixed, formData = {
+  shoppingCart, setShoppingCart, setCheckout, posFixed, formData = {
     streetName: '',
     houseNumber: '',
     zipcode: '',
@@ -78,7 +77,6 @@ export default function ViewPayment({
   setCheckout: React.Dispatch<React.SetStateAction<boolean>>,
   posFixed: boolean,
   formData?: CompanyFormData
-  deliveryTimes: DateTime[]
 }) {
   const [loading, setLoading] = useState(false);
   const [idealChanged, setIdealChanged] = useState(false);
@@ -89,7 +87,6 @@ export default function ViewPayment({
     email: '',
     lastName: '',
     phoneNumber: '',
-    deliveryTimeIndex: 0,
   });
   const {
     register, handleSubmit, clearErrors, formState: { errors },
@@ -112,7 +109,7 @@ export default function ViewPayment({
     const { orderId, orderNumber } = generateOrderNumber();
     const {
       firstName, lastName, email, phoneNumber,
-      houseNumber, streetName, companyName, city, zipcode, deliveryTimeIndex,
+      houseNumber, streetName, companyName, city, zipcode,
     } = formState;
     const idealBank = elements.getElement(IdealBankElement);
     const accountHolderName = `${firstName} ${lastName}`;
@@ -135,7 +132,6 @@ export default function ViewPayment({
         orderContent: JSON.stringify(shoppingCart.items),
         orderId,
         orderNumber,
-        deliveryTime: deliveryTimes[deliveryTimeIndex],
         paymentMethod: 'ideal',
       },
     };
@@ -187,136 +183,147 @@ export default function ViewPayment({
       >
         <Loader loading={loading} />
       </Modal>
-      <section className="col-span-5 lg:col-span-4 xl:col-span-5 shadow-right">
+      <section className="col-span-5 lg:col-span-4 xl:col-span-5 shadow-right px-20">
         <div className="mt-4 px-[5%] sm:px-[10%] md:px-[15%] lg:px-5">
           <p className="text-4xl font-bold text-gray-700">{t('paymentView.shippingDetails.labels.pay')}</p>
           <div className="mt-5 px-2 py-4 text-xl text-gray-600">
             <form className="divide-y" onSubmit={onSubmit}>
-              <div className={`grid grid-cols-1 lg:grid-cols-2 pb-9 ${styles.options} rounded-lg`}>
-                <p className="text-2xl pl-4 mb-4 mt-3 font-bold col-span-1 lg:col-span-2">{t('paymentView.shippingDetails.labels.deliveryAddress')}</p>
-                <div className="px-4 mt-3">
-                  <label className="block" htmlFor="streetName">
-                    {t('paymentView.shippingDetails.labels.streetName')}
+              <div className={`grid grid-cols-1 lg:grid-cols-2 pb-9 ${styles.payment} rounded-x-lg rounded-t-lg`}>
+                <p className="text-4xl pl-4 mb-4 mt-3 font-bold col-span-1 lg:col-span-2">{t('paymentView.shippingDetails.labels.pickupAddress')}</p>
+                <div className="ml-5">
+                  <p className="text-4xl align-middle mt-1 font-bold">
+                    {t('footer.address')}
                     :
-                    <span className="text-red-400">*</span>
-                    <input
-                      placeholder={t('paymentView.shippingDetails.placeholderText.streetName')}
-                      disabled={formData.streetName.length !== 0}
-                      id="streetName"
-                      {...register('streetName', { required: true })}
-                      type="text"
-                      value={formState.streetName}
-                      onChange={handleChange}
-                    />
-                    {
-                      errors.streetName ? (
-                        <p className="error-message">
-                          {t('paymentView.shippingDetails.errorMessage.streetName')}
-                        </p>
-                      ) : null
-                    }
-                  </label>
-                </div>
-                <div className="px-4 mt-3">
-                  <label className="block" htmlFor="houseNumber">
-                    {t('paymentView.shippingDetails.labels.houseNumber')}
-                    :
-                    <span className="text-red-400">*</span>
-                    <input
-                      placeholder={t('paymentView.shippingDetails.placeholderText.houseNumber')}
-                      disabled={formData.houseNumber.length !== 0}
-                      id="houseNumber"
-                      {...register('houseNumber', { required: true })}
-                      type="text"
-                      value={formState.houseNumber}
-                      onChange={handleChange}
-                    />
-                    {
-                      errors.houseNumber ? (
-                        <p className="error-message">
-                          {t('paymentView.shippingDetails.errorMessage.houseNumber')}
-                        </p>
-                      ) : null
-                    }
-                  </label>
-                </div>
-                <div className="px-4 mt-3">
-                  <label className="block" htmlFor="zipcode">
-                    {t('paymentView.shippingDetails.labels.zipCode')}
-                    :
-                    <span className="text-red-400">*</span>
-                    <input
-                      placeholder={t('paymentView.shippingDetails.placeholderText.zipCode')}
-                      disabled={formData.zipcode.length !== 0}
-                      id="zipcode"
-                      {...register('zipcode', { pattern: /^[1-9][0-9]{3}[A-Z]{2}$/, required: true })}
-                      type="text"
-                      value={formState.zipcode}
-                      onChange={handleChange}
-                    />
-                    {
-                       errors.zipcode && errors?.zipcode.type === 'pattern' ? (
-                         <p className="error-message">
-                           {t('paymentView.shippingDetails.errorMessage.invalidZipCode')}
-                         </p>
-                       ) : null
-                    }
-                    {
-                      errors.zipcode && errors?.zipcode.type === 'required' ? (
-                        <p className="error-message">
-                          {t('paymentView.shippingDetails.errorMessage.zipCode')}
-                        </p>
-                      ) : null
-                    }
-                  </label>
-                </div>
-                <div className="px-4 mt-3">
-                  <label className="block" htmlFor="city">
-                    {t('paymentView.shippingDetails.labels.city')}
-                    :
-                    <span className="text-red-400">*</span>
-                    <input
-                      placeholder={t('paymentView.shippingDetails.placeholderText.city')}
-                      disabled={formData.city.length !== 0}
-                      id="city"
-                      {...register('city', { required: true })}
-                      type="text"
-                      value={formState.city}
-                      onChange={handleChange}
-                    />
-                    {
-                      errors.city ? (
-                        <p className="error-message">
-                          {t('paymentView.shippingDetails.errorMessage.city')}
-                        </p>
-                      ) : null
-                    }
-                  </label>
-                </div>
-                <div className="px-4 mt-3">
-                  <label className="block" htmlFor="companyName">
-                    {t('paymentView.shippingDetails.labels.companyName')}
-                    :
-                    <input
-                      placeholder={t('paymentView.shippingDetails.placeholderText.companyName')}
-                      disabled={formData.companyName.length !== 0}
-                      id="companyName"
-                      {...register('companyName')}
-                      type="text"
-                      value={formState.companyName}
-                      onChange={handleChange}
-                    />
-                    {
-                      errors.companyName ? (
-                        <p className="error-message">
-                          {t('paymentView.shippingDetails.errorMessage.companyName')}
-                        </p>
-                      ) : null
-                    }
-                  </label>
+                  </p>
+                  <p className="text-2xl">Toko Poppi</p>
+                  <p className="text-2xl">Bagijnhof 13, 1671CC</p>
+                  <p className="text-2xl">Medemblik</p>
                 </div>
               </div>
-              <div className={`grid grid-cols-1 lg:grid-cols-2 ${styles.options} rounded-lg`}>
+              {/* <div className={`grid grid-cols-1 lg:grid-cols-2 pb-9 ${styles.payment} rounded-x-lg rounded-t-lg`}> */}
+              {/*  <div className="px-4 mt-3"> */}
+              {/*    <label className="block" htmlFor="streetName"> */}
+              {/*      {t('paymentView.shippingDetails.labels.streetName')} */}
+              {/*      : */}
+              {/*      <span className="text-red-400">*</span> */}
+              {/*      <input */}
+              {/*        placeholder={t('paymentView.shippingDetails.placeholderText.streetName')} */}
+              {/*        disabled={formData.streetName.length !== 0} */}
+              {/*        id="streetName" */}
+              {/*        {...register('streetName', { required: true })} */}
+              {/*        type="text" */}
+              {/*        value={formState.streetName} */}
+              {/*        onChange={handleChange} */}
+              {/*      /> */}
+              {/*      { */}
+              {/*        errors.streetName ? ( */}
+              {/*          <p className="error-message"> */}
+              {/*            {t('paymentView.shippingDetails.errorMessage.streetName')} */}
+              {/*          </p> */}
+              {/*        ) : null */}
+              {/*      } */}
+              {/*    </label> */}
+              {/*  </div> */}
+              {/*  <div className="px-4 mt-3"> */}
+              {/*    <label className="block" htmlFor="houseNumber"> */}
+              {/*      {t('paymentView.shippingDetails.labels.houseNumber')} */}
+              {/*      : */}
+              {/*      <span className="text-red-400">*</span> */}
+              {/*      <input */}
+              {/*        placeholder={t('paymentView.shippingDetails.placeholderText.houseNumber')} */}
+              {/*        disabled={formData.houseNumber.length !== 0} */}
+              {/*        id="houseNumber" */}
+              {/*        {...register('houseNumber', { required: true })} */}
+              {/*        type="text" */}
+              {/*        value={formState.houseNumber} */}
+              {/*        onChange={handleChange} */}
+              {/*      /> */}
+              {/*      { */}
+              {/*        errors.houseNumber ? ( */}
+              {/*          <p className="error-message"> */}
+              {/*            {t('paymentView.shippingDetails.errorMessage.houseNumber')} */}
+              {/*          </p> */}
+              {/*        ) : null */}
+              {/*      } */}
+              {/*    </label> */}
+              {/*  </div> */}
+              {/*  <div className="px-4 mt-3"> */}
+              {/*    <label className="block" htmlFor="zipcode"> */}
+              {/*      {t('paymentView.shippingDetails.labels.zipCode')} */}
+              {/*      : */}
+              {/*      <span className="text-red-400">*</span> */}
+              {/*      <input */}
+              {/*        placeholder={t('paymentView.shippingDetails.placeholderText.zipCode')} */}
+              {/*        disabled={formData.zipcode.length !== 0} */}
+              {/*        id="zipcode" */}
+              {/*        {...register('zipcode', { pattern: /^[1-9][0-9]{3}[A-Z]{2}$/, required: true })} */}
+              {/*        type="text" */}
+              {/*        value={formState.zipcode} */}
+              {/*        onChange={handleChange} */}
+              {/*      /> */}
+              {/*      { */}
+              {/*         errors.zipcode && errors?.zipcode.type === 'pattern' ? ( */}
+              {/*           <p className="error-message"> */}
+              {/*             {t('paymentView.shippingDetails.errorMessage.invalidZipCode')} */}
+              {/*           </p> */}
+              {/*         ) : null */}
+              {/*      } */}
+              {/*      { */}
+              {/*        errors.zipcode && errors?.zipcode.type === 'required' ? ( */}
+              {/*          <p className="error-message"> */}
+              {/*            {t('paymentView.shippingDetails.errorMessage.zipCode')} */}
+              {/*          </p> */}
+              {/*        ) : null */}
+              {/*      } */}
+              {/*    </label> */}
+              {/*  </div> */}
+              {/*  <div className="px-4 mt-3"> */}
+              {/*    <label className="block" htmlFor="city"> */}
+              {/*      {t('paymentView.shippingDetails.labels.city')} */}
+              {/*      : */}
+              {/*      <span className="text-red-400">*</span> */}
+              {/*      <input */}
+              {/*        placeholder={t('paymentView.shippingDetails.placeholderText.city')} */}
+              {/*        disabled={formData.city.length !== 0} */}
+              {/*        id="city" */}
+              {/*        {...register('city', { required: true })} */}
+              {/*        type="text" */}
+              {/*        value={formState.city} */}
+              {/*        onChange={handleChange} */}
+              {/*      /> */}
+              {/*      { */}
+              {/*        errors.city ? ( */}
+              {/*          <p className="error-message"> */}
+              {/*            {t('paymentView.shippingDetails.errorMessage.city')} */}
+              {/*          </p> */}
+              {/*        ) : null */}
+              {/*      } */}
+              {/*    </label> */}
+              {/*  </div> */}
+              {/*  <div className="px-4 mt-3"> */}
+              {/*    <label className="block" htmlFor="companyName"> */}
+              {/*      {t('paymentView.shippingDetails.labels.companyName')} */}
+              {/*      : */}
+              {/*      <input */}
+              {/*        placeholder={t('paymentView.shippingDetails.placeholderText.companyName')} */}
+              {/*        disabled={formData.companyName.length !== 0} */}
+              {/*        id="companyName" */}
+              {/*        {...register('companyName')} */}
+              {/*        type="text" */}
+              {/*        value={formState.companyName} */}
+              {/*        onChange={handleChange} */}
+              {/*      /> */}
+              {/*      { */}
+              {/*        errors.companyName ? ( */}
+              {/*          <p className="error-message"> */}
+              {/*            {t('paymentView.shippingDetails.errorMessage.companyName')} */}
+              {/*          </p> */}
+              {/*        ) : null */}
+              {/*      } */}
+              {/*    </label> */}
+              {/*  </div> */}
+              {/* </div> */}
+              <div className={`grid grid-cols-1 lg:grid-cols-2 ${styles.payment} rounded-x-lg rounded-b-lg`}>
                 <p className="mt-5 text-2xl pl-4 mb-4 font-bold col-span-1 lg:col-span-2 divide-y-2">{t('paymentView.personalView.labels.personalDetails')}</p>
                 <div className="px-4 mt-3">
                   <label className="block" htmlFor="firstName">
@@ -417,23 +424,7 @@ export default function ViewPayment({
                     }
                   </label>
                 </div>
-
                 <div className="px-4 mt-3">
-                  <div className="mb-3">
-                    <label htmlFor="deliveryTime">
-                      {t('paymentView.personalView.labels.deliveryTime')}
-                      :
-                      <select onChange={handleChange} name="deliveryTimeIndex" id="deliveryTime" className="ml-3 bg-white ml-0.5 p-2 border-2 pr-8 text-gray-800">
-                        {
-                        deliveryTimes.map((deliveryTime, index) => (
-                          <option key={deliveryTime.toString()} value={index}>
-                            {deliveryTime.toFormat('HH:mm (ccc dd MMM)')}
-                          </option>
-                        ))
-                      }
-                      </select>
-                    </label>
-                  </div>
                   <div>
                     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <label htmlFor="ideal">
@@ -450,7 +441,7 @@ export default function ViewPayment({
                   </div>
                 </div>
               </div>
-              <button disabled={!stripe} type="submit" className="mt-5 text-white  bg-blue-600  hover:bg-blue-700 border-blue-600 disabled:bg-blue-300 disabled:border-blue-300 p-2 w-full lg:w-1/2">
+              <button disabled={!stripe} type="submit" className="mt-5 text-white bg-blue-600  hover:bg-blue-700 border-blue-600 disabled:bg-blue-300 disabled:border-blue-300 p-2 w-full lg:w-1/2">
                 {t('paymentView.shippingDetails.labels.finishButton')}
                 {' '}
                 (

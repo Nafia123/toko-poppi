@@ -1,5 +1,6 @@
 import React, { FormEvent, useState } from 'react';
 import useTranslation from 'next-translate/useTranslation';
+import { DateTime } from 'luxon';
 import { MenuItemObject, Dish } from '../../_types/MenuItemModel';
 // eslint-disable-next-line import/no-absolute-path
 import styles from '/styles/Menuitem.module.css';
@@ -9,13 +10,15 @@ import { showCorrectPrice } from '../../utils/helper';
 interface PropData {
   data: MenuItemObject,
   setShoppingCart: React.Dispatch<React.SetStateAction<ShoppingCartList>>,
-  orderClosed?: boolean
+  orderClosed?: boolean,
+  pickupDate: DateTime
 }
 
 function addToShoppingCart(
   setShoppingCart: React.Dispatch<React.SetStateAction<ShoppingCartList>>,
   itemToAdd: MenuItemObject,
   options: Map<string, string>,
+  pickupDate: DateTime,
 ) {
   const optionsArray = Array.from(options.values());
   const menuKey = itemToAdd.menuName + optionsArray.join('');
@@ -27,6 +30,7 @@ function addToShoppingCart(
     if (index === -1) {
       newCartList.push({
         price: itemToAdd.menuPrice,
+        pickupDate: pickupDate.toString(),
         amount: 1,
         option: optionsArray,
         name: itemToAdd.menuName,
@@ -45,7 +49,9 @@ function addToShoppingCart(
   });
 }
 
-function OpenOptions({ setShoppingCart, data, orderClosed }: PropData) {
+function OpenOptions({
+  setShoppingCart, data, orderClosed, pickupDate,
+}: PropData) {
   const { menuDish } = data;
   const defaultOptions = new Map<string, string>();
   menuDish.forEach((dish) => {
@@ -60,7 +66,7 @@ function OpenOptions({ setShoppingCart, data, orderClosed }: PropData) {
     setOptions(options.set(dishName, selectValue));
   }
   return (
-    <div className={`${styles.options} p-8 border-x-2 border-b-2 relative`}>
+    <div className={`${styles.options} p-8 border-x border-b relative rounded-b-lg`}>
       <div>
         {menuDish.map((dish) => (dish.dishOptions?.length
           ? (
@@ -82,7 +88,7 @@ function OpenOptions({ setShoppingCart, data, orderClosed }: PropData) {
           ) : null))}
       </div>
       {!orderClosed ? (
-        <button className="mt-5 text-white border-blue-600 border-2 bg-blue-600 p-2" type="submit" onClick={() => addToShoppingCart(setShoppingCart, data, options)}>
+        <button className="mt-5 text-white border-blue-600 border-2 bg-blue-600 p-2" type="submit" onClick={() => addToShoppingCart(setShoppingCart, data, options, pickupDate)}>
           +
           {' '}
           {t('menuItem.addToShoppingCart')}
@@ -102,7 +108,9 @@ function ShowDish({ dish } : { dish: Dish }) {
   );
 }
 
-export default function MenuItem({ data, setShoppingCart, orderClosed } : PropData) {
+export default function MenuItem({
+  data, setShoppingCart, orderClosed, pickupDate,
+} : PropData) {
   const {
     menuName, menuPrice, menuDish, menuImage, allergens,
   } = data;
@@ -110,10 +118,10 @@ export default function MenuItem({ data, setShoppingCart, orderClosed } : PropDa
   const [showOptions, setShowOptions] = React.useState(false);
   const openClick = () => setShowOptions(!showOptions);
   return (
-    <div className="my-5 mx-3 2xl:mx-52 lg:mx-20 rounded-md shadow-lg">
-      <section className={` relative ${showOptions ? 'border-x-2 border-t-2' : 'border-2'}`}>
-        <div role="button" aria-hidden onClick={openClick} className="flex justify-between p-3 md:p-8">
-          <button type="button" className="absolute top-0 right-0 border-l-2 border-b-2 p-0.5">
+    <div className={`my-1 rounded-xl shadow-sm mx-4 bg-white ${orderClosed ? 'opacity-40 pointer-events-none' : ''}`}>
+      <section className={`relative ${showOptions ? ' border-t border-x rounded-x-lg rounded-t-lg' : 'border rounded-lg'}`}>
+        <div role="button" aria-hidden onClick={openClick} className="flex justify-between p-3 ">
+          <button type="button" className="absolute top-0 right-0 border-l border-b py-0.5">
             <img src="/add_black_24dp.svg" alt="+" />
           </button>
           <div className="ml-2">
@@ -136,10 +144,10 @@ export default function MenuItem({ data, setShoppingCart, orderClosed } : PropDa
                 )
                 : null}
             </div>
-            <div className="md:mb-10" />
-            <p className="text-xl md:text-4xl font-medium mt-2 md:mt-10 md:absolute bottom-5">{showCorrectPrice(menuPrice)}</p>
+            <div className="md:mb-12" />
+            <p className="text-xl md:text-4xl font-medium mt-2 md:mt-10 md:absolute bottom-4">{showCorrectPrice(menuPrice)}</p>
           </div>
-          <img src={menuImage.data !== null ? menuImage.data.attributes.url : '/daal.png'} alt="Dish" className="object-cover mx-1 mt-10 w-20 h-20 md:mr-1 md:mt-0 sm:mt-0 md:w-52 md:h-52 sm:w-40 sm:h-40 right-5 relative my-0 " />
+          <img src={menuImage.data !== null ? menuImage.data.attributes.url : '/daal.png'} alt="Dish" className="object-cover mx-1 mt-10 w-20 h-20 sm:mt-0 sm:w-40 sm:h-40 md:mr-1 md:mt-0  md:w-52 md:h-52 right-5 relative my-0" />
         </div>
       </section>
       {showOptions ? (
@@ -147,6 +155,7 @@ export default function MenuItem({ data, setShoppingCart, orderClosed } : PropDa
           setShoppingCart={setShoppingCart}
           orderClosed={orderClosed}
           data={data}
+          pickupDate={pickupDate}
         />
       ) : null}
     </div>

@@ -4,6 +4,7 @@
   },
       "shoppingCart": {
         "title": "Shopping cart",
+        "pickupDate": "Pick up date",
         "emptyCart": "There seems to be nothing in your shopping cart.",
         "subtotal": "Subtotal",
         "addMeal": "Add a Meal",
@@ -61,6 +62,7 @@
           "labels": {
             "pay": "Payment",
             "deliveryAddress": "Delivery Address",
+            "pickupAddress": "Pick up Address",
             "streetName": "Street name",
             "houseNumber": "House number",
             "zipCode": "Zipcode",
